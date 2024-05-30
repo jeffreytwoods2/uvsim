@@ -63,11 +63,11 @@ def iterate_list(memory_list, start_index):
             case '30': 
                 add_op(memory_list, operand)
             case '31':
-                subtract_op()
+                subtract_op(memory_list, operand)
             case '32':
-                divide_op()
+                divide_op(memory_list, operand)
             case '33':
-                multiply_op()
+                multiply_op(memory_list, operand)
             #Branch to a specific location in memory
             case '40':
                 iterate_list(memory_list, operand)
