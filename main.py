@@ -1,3 +1,6 @@
+#Global accumulator variable
+accumulator = 0
+
 #Read a word from the keyboard into a specific location in memory
 def read_op(memory_list, operand):
     word = input()
@@ -17,12 +20,17 @@ def write_op(memory_list, operand):
     print(memory_list[operand][0] + memory_list[operand][1])
 
 #Load a word from a specific location in memory into the accumulator
-def load_op():
-    pass
+def load_op(memory_list, operand):
+    global accumulator
+    accumulator = int(memory_list[operand][1])
 
 #Store a word from the accumulator into a specific location in memory
-def store_op():
-    pass
+def store_op(memory_list, operand):
+    global accumulator
+    if accumulator < 0:
+        memory_list[operand] = ('-', str(abs(accumulator)).zfill(4))
+    else:
+        memory_list[operand] = ('+', str(accumulator).zfill(4))
 
 #Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
 def add_op():
@@ -116,6 +124,7 @@ def main():
 
     file.close()
 
+    global accumulator
     accumulator = 0
 
     iterate_list(memory_contents, 0)
