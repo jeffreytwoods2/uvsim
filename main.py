@@ -25,8 +25,9 @@ def store_op():
     pass
 
 #Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
-def add_op():
-    pass
+def add_op(operand, memory):
+    global accumulator
+    accumulator += memory[operand]
 
 #Subtract a word from a specific location in memory from the word in the accumulator (leave the result in the accumulator)
 def subtract_op():
@@ -55,7 +56,7 @@ def iterate_list(memory_list, start_index):
             case '21':
                 store_op()
             case '30': 
-                add_op()
+                add_op(memory_list, operand)
             case '31':
                 subtract_op()
             case '32':
