@@ -1,3 +1,5 @@
+import os
+
 #Read a word from the keyboard into a specific location in memory
 def read_op(memory_list, operand):
     word = input()
@@ -41,7 +43,8 @@ def multiply_op():
     pass
 
 
-def iterate_list(memory_list, start_index):
+def iterate_list(memory_list, start_index, acc_val):
+    accumulator = acc_val
     for i in range(start_index, len(memory_list)):
         op = memory_list[i][1][0:2]
         operand = int(memory_list[i][1][2:4])
@@ -64,17 +67,21 @@ def iterate_list(memory_list, start_index):
                 multiply_op()
             #Branch to a specific location in memory
             case '40':
-                iterate_list(memory_list, operand)
+                iterate_list(memory_list, operand, accumulator)
                 break
             #Branch to a specific location in memory if the accumulator is negative
             case '41':
-                pass
-            #Branch to a specific location in memory if the accumulator is negative
+                if accumulator < 0:
+                    iterate_list(memory_list, operand, accumulator)
+                    break
+            #Branch to a specific location in memory if the accumulator is zero
             case '42':
-                pass
+                if accumulator == 0:
+                    iterate_list(memory_list, operand, accumulator)
+                    break
             #Stop the program
             case '43':
-                pass
+                return
             case _:
                 pass
 
@@ -116,9 +123,7 @@ def main():
 
     file.close()
 
-    accumulator = 0
-
-    iterate_list(memory_contents, 0)
+    iterate_list(memory_contents, 0, 0)
 
 if __name__ == "__main__":
     main()
