@@ -1,3 +1,5 @@
+accumulator = 0
+
 #Read a word from the keyboard into a specific location in memory
 def read_op(memory_list, operand):
     word = input()
@@ -30,16 +32,19 @@ def add_op(operand, memory):
     accumulator += memory[operand]
 
 #Subtract a word from a specific location in memory from the word in the accumulator (leave the result in the accumulator)
-def subtract_op():
-    pass
+def subtract_op(operand, memory):
+    global accumulator
+    accumulator -= memory[operand]
 
 #Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator)
-def divide_op():
-    pass
+def divide_op(operand, memory):
+    global accumulator
+    accumulator /= memory[operand]
 
 #multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
-def multiply_op():
-    pass
+def multiply_op(operand, memory):
+    global accumulator
+    accumulator*= memory[operand]
 
 
 def iterate_list(memory_list, start_index):
@@ -116,8 +121,6 @@ def main():
         memory_contents.append((line[0],line[1:5] ))
 
     file.close()
-
-    accumulator = 0
 
     iterate_list(memory_contents, 0)
 
