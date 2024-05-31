@@ -1,5 +1,9 @@
 accumulator = 0
 
+# To test functions where accumulator is altered
+def get_accumulator():
+    return accumulator
+
 #Read a word from the keyboard into a specific location in memory
 def read_op(memory_list, operand):
     word = input()
@@ -27,24 +31,24 @@ def store_op():
     pass
 
 #Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
-def add_op(operand, memory):
+def add_op(operand):
     global accumulator
-    accumulator += memory[operand]
+    accumulator += operand
 
 #Subtract a word from a specific location in memory from the word in the accumulator (leave the result in the accumulator)
-def subtract_op(operand, memory):
+def subtract_op(operand):
     global accumulator
-    accumulator -= memory[operand]
+    accumulator -= operand
 
 #Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator)
-def divide_op(operand, memory):
+def divide_op(operand):
     global accumulator
-    accumulator /= memory[operand]
+    accumulator /= operand
 
 #multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
-def multiply_op(operand, memory):
+def multiply_op(operand):
     global accumulator
-    accumulator*= memory[operand]
+    accumulator *= operand
 
 
 def iterate_list(memory_list, start_index):
@@ -61,13 +65,13 @@ def iterate_list(memory_list, start_index):
             case '21':
                 store_op()
             case '30': 
-                add_op(memory_list, operand)
+                add_op(memory_list, int(memory_list[operand][1]))
             case '31':
-                subtract_op(memory_list, operand)
+                subtract_op(memory_list, int(memory_list[operand][1]))
             case '32':
-                divide_op(memory_list, operand)
+                divide_op(memory_list, int(memory_list[operand][1]))
             case '33':
-                multiply_op(memory_list, operand)
+                multiply_op(memory_list, int(memory_list[operand][1]))
             #Branch to a specific location in memory
             case '40':
                 iterate_list(memory_list, operand)
@@ -121,7 +125,7 @@ def main():
         memory_contents.append((line[0],line[1:5] ))
 
     file.close()
-
+    print(memory_contents)
     iterate_list(memory_contents, 0)
 
 if __name__ == "__main__":
