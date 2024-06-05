@@ -45,3 +45,11 @@ BRANCHZERO = 42 Branch to a specific location in memory if the accumulator is ze
 HALT = 43 Stop the program
 
 The last two digits of a BasicML instruction are the operand – the address of the memory location containing the word to which the operation applies
+
+## Installing and Running this Software
+
+Note: In order to run this software, you will need Python installed on you local machine.
+
+### Step 1 - Installation:
+
+
