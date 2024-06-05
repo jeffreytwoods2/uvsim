@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 accumulator = 0
 
 # To test functions where accumulator is altered
@@ -87,20 +88,18 @@ def iterate_list(memory_list, start_index):
                 pass
             case _:
                 pass
+=======
+from vm import VM
+>>>>>>> 5ab9c68cee53802e85e8c074daf3614e72a5cf5a
 
 def main():
-    #Get file name from user
-    file_name = input('Please enter the file name:')
-    
-    #Check file path validity
-    try:
-        file = open(file_name, 'r')
-    except:
-        print('Invalid file name')
-        return
-    
-    memory_contents = []
+    vm = VM()
+    vm.load_program("test_files/Test2.txt")
+    vm.run()
+    print("\nFINAL STATE")
+    print(vm)
 
+<<<<<<< HEAD
     while True:
         if len(memory_contents) > 99:
             break
@@ -130,3 +129,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+=======
+main()
+>>>>>>> 5ab9c68cee53802e85e8c074daf3614e72a5cf5a
