@@ -46,10 +46,16 @@ HALT = 43 Stop the program
 
 The last two digits of a BasicML instruction are the operand – the address of the memory location containing the word to which the operation applies
 
-## Installing and Running this Software
+## Running this Software on Linux
 
 Note: In order to run this software, you will need Python installed on you local machine.
 
-### Step 1 - Installation:
+### 1. Installation:
+
+From uvsim's root page on github, click on the green > Code button. This will open up a small menu. At the bottom of the menu, click "Download ZIP". This will download all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
+
+### 2. Start Running uvsim:
+
+
 
 
