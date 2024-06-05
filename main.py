@@ -1,17 +1,10 @@
-def validate_code(s: str) -> bool:
-    if len(s) != 5:
-        return False
-    
-    if s[0] not in ('+', '-'):
-        return False
-    
-    if not s[1:].isdigit():
-        return False
-    
-    return True
-
+from vm import VM
 
 def main():
-    pass
+    vm = VM()
+    vm.load_program("test_files/Test2.txt")
+    vm.run()
+    print("\nFINAL STATE")
+    print(vm)
 
 main()
