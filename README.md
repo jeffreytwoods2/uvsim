@@ -52,7 +52,7 @@ Note: In order to run this software, you will need Python installed on you local
 ### 1. Installing uvsim:
 From uvsim's root page on github, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
 
-### 2. Start Running uvsim:
+### 2. Running uvsim:
 To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py`. If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed. 
 
 ### 3. Using uvsim:
