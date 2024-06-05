@@ -1,6 +1,10 @@
 #Global accumulator variable
 accumulator = 0
 
+# To test functions where the accumulator is altered
+def get_accumulator():
+    return accumulator
+
 #Read a word from the keyboard into a specific location in memory
 def read_op(memory_list, operand):
     word = input()
@@ -59,9 +63,9 @@ def iterate_list(memory_list, start_index):
             case '11':
                 write_op(memory_list, operand)
             case '20':
-                load_op()
+                load_op(memory_list, operand)
             case '21':
-                store_op()
+                store_op(memory_list, operand)
             case '30': 
                 add_op()
             case '31':
