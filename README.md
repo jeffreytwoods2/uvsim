@@ -50,13 +50,13 @@ The last two digits of a BasicML instruction are the operand – the address of 
 Note: In order to run this software, you will need Python installed on you local machine.
 
 ### 1. Installing uvsim:
-From uvsim's root page on github, click on the green __<> Code__ button. This will open up a small menu. At the bottom of the menu, click __Download ZIP__. This will download all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
+From uvsim's root page on github, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
 
 ### 2. Start Running uvsim:
-To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory. The location of this directory will depend on where you extracted the __.zip__ file. Finally, run the command `python3 main.py`. If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed. 
+To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py`. If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed. 
 
 ### 3. Using uvsim:
-Once the software is running, it will start by asking you to input a path for your input file. Simply input the path to the file that you would like uvsim to process. Check the files in __test_files__ to get an idea of what the input file should look like. Note that the format for each line of you input file should be either `+` or `-`, followed by any 4 digits. Once you've given uvsim a valid file to process, it will run through each line of that file, and then display its final state in the terminal once processing is complete. 
+Once the software is running, it will start by asking you for the path to your input file. Simply type the path to the file that you would like uvsim to process, and then press enter. Check the files in __test_files__ to get an idea of what the input file should look like. Note that the format for each line of your input file should be either `+` or `-`, followed by any 4 digits. Once you've given uvsim a valid file to process, it will run through each line of that file, and then display its final state in the terminal once processing is complete. 
 
 
 
