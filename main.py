@@ -3,14 +3,14 @@ import os
 import sys
 
 def get_file_path():
+    # If there is no command line argument, default file will be used
     default_file = "test_files/Test1.txt"
+    if len(sys.argv) >= 2:
+        file_path = sys.argv[1]
+    else:
+        print(f"No input file was given in the command line. Defaulting to {default_file}.")
+        file_path = default_file
 
-    # Check for command line argument
-    if len(sys.argv) < 2:
-        print(f"No input file provided. Defaulting to {default_file}")
-        return default_file # If no command line argument, default to Test1.txt
-    
-    file_path = sys.argv[1]
     if not os.path.exists(file_path):
         raise ValueError(f"File path {file_path} was not found.")
     
