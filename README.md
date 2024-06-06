@@ -49,16 +49,16 @@ The last two digits of a BasicML instruction are the operand – the address of 
 ## Getting Started on uvsim:
 Note: To run this software, you will need Python installed on your local machine.
 
-### 1. Installing uvsim:
+### Installing uvsim:
 From uvsim's root page on GitHub, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
 
-### 2. Running uvsim:
-To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py`. If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed. 
+### Running uvsim:
+To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py` If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed. This will run the program with the default test file as the input, but you can also have the program process any file of your choosing by appending the path of the file to your command line prompt, eg., `python3 main.py my_dir/input_file`
 
-Alternatively, you can use __VS Code__ to run it. To do so, make sure you have the Python extension installed before opening the __uvsim_master__ directory. Once you have the `main.py` file open, run it by using the play button in the top-right corner of the editor.
+Alternatively, you can use __VS Code__ to run it. To do so, make sure you have the Python extension installed before opening the __uvsim_master__ directory. Once you have the `main.py` file open, run it by using the play button in the top-right corner of the editor,
 
-### 3. Using uvsim:
-Once the software is running, it will start by asking you for the path to your input file. Simply type the path to the file that you would like uvsim to process, and then press enter. Check the files in __test_files__ to get an idea of what the input file should look like. Note that the format for each line of your input file should be either `+` or `-`, followed by any 4 digits. Once you've given uvsim a valid file to process, it will run through each line of that file, and then display its final state in the terminal once processing is complete. 
+### Note on input files:
+If you are wanting to process one of your own input files through uvsim, check the files in __test_files__ to get an idea of what the input file should look like. Note that the format for each line of your input file should be either `+` or `-`, followed by any 4 digits.
 
 
 
