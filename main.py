@@ -21,7 +21,5 @@ def main():
     vm = VM()
     vm.load_program(file_path)
     vm.run()
-    print("\nFINAL STATE")
-    print(vm)
 
 main()
