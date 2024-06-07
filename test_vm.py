@@ -161,7 +161,7 @@ class TestBranchZero(unittest.TestCase):
         vm.branchzero_op(10)
         assert(vm.program_counter == 10)
     
-    # Doesn't branch if accumulator = 0
+    # Doesn't branch if accumulator != 0
     def test_branch_not_zero(self):
         vm = VM()
         vm.accumulator = 1
