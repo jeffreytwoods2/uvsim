@@ -127,27 +127,27 @@ class TestMultiplication(unittest.TestCase):
 
 class TestBranch(unittest.TestCase):
     # VM branches with valid address
-    def test_1(self):
+    def test_valid_branch(self):
         vm = VM()
         vm.branch_op(10)
         assert(vm.program_counter == 10)
     
     # Invalid jump address rejected
-    def test_2(self):
+    def test_invalid_branch(self):
         vm = VM()
         with self.assertRaises(Exception):
             vm.branch_op(-1)
 
 class TestBranchNeg(unittest.TestCase):
     # Correctly branches with negative accumulator
-    def test_1(self):
+    def test_branch_neg(self):
         vm = VM()
         vm.accumulator = -1
         vm.branchneg_op(10)
         assert(vm.program_counter == 10)
     
     # Doesn't branch if accumulator is positive
-    def test_2(self):
+    def test_branch_pos(self):
         vm = VM()
         vm.accumulator = 1
         vm.branchneg_op(10)
@@ -155,14 +155,14 @@ class TestBranchNeg(unittest.TestCase):
 
 class TestBranchZero(unittest.TestCase):
     # Correctly branches when accumulator == 0
-    def test_1(self):
+    def test_branch_zero(self):
         vm = VM()
         vm.accumulator = 0
         vm.branchzero_op(10)
         assert(vm.program_counter == 10)
     
     # Doesn't branch if accumulator = 0
-    def test_2(self):
+    def test_branch_not_zero(self):
         vm = VM()
         vm.accumulator = 1
         vm.branchzero_op(10)
@@ -170,7 +170,7 @@ class TestBranchZero(unittest.TestCase):
 
 class TestHalt(unittest.TestCase):
     # Halt instruction terminates program immediately
-    def test_1(self):
+    def test_immediate_halt(self):
         vm = VM()
         vm.memory[0] = "+4300"
         vm.memory[1] = "+4050"
@@ -178,7 +178,7 @@ class TestHalt(unittest.TestCase):
         assert(vm.program_counter != 50)
     
     # Halt instruction works anywhere in memory
-    def test_2(self):
+    def test_halt_anywhere(self):
         vm = VM()
         vm.memory[0] = "+4050"
         vm.memory[50] = "+4300"
@@ -187,7 +187,7 @@ class TestHalt(unittest.TestCase):
 
 class TestLoadProgram(unittest.TestCase):
     # Code correctly loads into VM
-    def test_1(self):
+    def test_normal_load(self):
         vm = VM()
         vm.load_program("test_files/Test1.txt")
         with open("test_files/Test1.txt", "r") as f:
@@ -199,21 +199,21 @@ class TestLoadProgram(unittest.TestCase):
                 assert(file_code == vm_code)
     
     # File is rejected if larger than VM capacity
-    def test_2(self):
+    def test_load_too_big(self):
         vm = VM()
         with self.assertRaises(Exception):
             vm.load_program("test_files/TooLong.txt")
 
 class TestRun(unittest.TestCase):
     # Correctly executes first and last instruction in a max-length program
-    def test_1(self):
+    def test_normal_run(self):
         vm = VM()
         vm.load_program("test_files/FullProgram.txt")
         vm.run()
         assert(vm.program_counter == 100)
 
     # Throws error on invalid opcode
-    def test_2(self):
+    def test_invalid_run(self):
         vm = VM()
         vm.memory[0] = "+9900"
         with self.assertRaises(Exception):
