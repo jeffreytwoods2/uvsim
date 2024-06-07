@@ -152,6 +152,41 @@ class TestMultiplication(unittest.TestCase):
         vm.memory[50] = "+0002"
         vm.multiply_op(50)
         assert vm.accumulator == 30 # 15 * 2
+class TestLoad(unittest.TestCase):
+    # Test loading values into the accumulator
+    def test_load_positive(self):
+        vm = VM()
+        vm.memory = [
+            "+0001",
+            "-0023",
+            "+0045"
+        ]
+        vm.load_op(0)  # Load +0001 into accumulator
+        assert vm.accumulator == 1
+    
+    def test_load_negative(self):
+        vm = VM()
+        vm.memory = [
+            "+0001",
+            "-0023",
+            "+0045"
+        ]
+        vm.load_op(1)  # Load -0023 into accumulator
+        assert vm.accumulator == -23
+
+class TestStore(unittest.TestCase):
+    # Test storing values from the accumulator into memory
+    def test_store_positive(self):
+        vm = VM()
+        vm.accumulator = 67
+        vm.store_op(2)  # Store +0067 at index 2
+        assert vm.memory[2] == ("+0067")
+
+    def test_store_negative(self):
+        vm = VM()
+        vm.accumulator = -89
+        vm.store_op(2) # Store -0089 at index 2
+        assert vm.memory[2] == ("-0089")
 
 if __name__ == "__main__":
     unittest.main()
