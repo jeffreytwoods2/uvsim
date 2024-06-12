@@ -125,6 +125,35 @@ class TestMultiplication(unittest.TestCase):
         vm.multiply_op(50)
         assert vm.accumulator == 30 # 15 * 2
 
+class TestOverflowDetection(unittest.TestCase):
+    def test_positive_overflow(self):
+        vm = VM()
+        vm.accumulator = 10455
+        assert vm.accumulator_overflow() == True
+    
+    def test_negative_overflow(self):
+        vm = VM()
+        vm.accumulator = -34567
+        assert vm.accumulator_overflow() == True
+    
+    def test_non_overflow(self):
+        vm = VM()
+        vm.accumulator = 9040
+        assert vm.accumulator_overflow() == False
+
+class TestTruncateAccumulator(unittest.TestCase):
+    def test_positive_truncate(self):
+        vm = VM()
+        vm.accumulator = 10234
+        vm.truncate_accumulator()
+        assert vm.accumulator == 234
+    
+    def test_negative_truncate(self):
+        vm = VM()
+        vm.accumulator = -13443
+        vm.truncate_accumulator()
+        assert vm.accumulator == -3443
+
 class TestBranch(unittest.TestCase):
     # VM branches with valid address
     def test_valid_branch(self):
