@@ -4,6 +4,16 @@ class VM():
         self.program_counter = 0
         self.accumulator = 0
     
+    def accumulator_overflow(self):
+        return self.accumulator > 9999 or self.accumulator < -9999
+    
+    def truncate_accumulator(self):
+        adjusted_acc_string = str(self.accumulator)[-4:]
+        if self.accumulator > 0:
+            self.accumulator = int(adjusted_acc_string)
+        else:
+            self.accumulator = -int(adjusted_acc_string)
+
     def read_op(self, operand: int):
         '''Read a word from the keyboard into a specific location in memory'''
         word = input('Please enter a four digit word:\n> ')
@@ -40,7 +50,7 @@ class VM():
     
     def divide_op(self, operand: int):
         '''Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator)'''
-        self.accumulator /= int(self.memory[operand])
+        self.accumulator = int(self.accumulator / int(self.memory[operand]))
     
     def multiply_op(self, operand: int):
         '''Multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)'''
@@ -125,10 +135,13 @@ class VM():
                     return
                 case _:
                     raise ValueError(f"Invalid opcode: {opcode}")
+            
+            if self.accumulator_overflow():
+                self.truncate_accumulator()
 
 if __name__ == "__main__":
     vm = VM()
-    vm.load_program("test_files/Test2.txt")
+    vm.load_program("test_files/Test3.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)
