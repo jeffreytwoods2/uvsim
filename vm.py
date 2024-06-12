@@ -141,7 +141,7 @@ class VM():
 
 if __name__ == "__main__":
     vm = VM()
-    vm.load_program("test_files/Test3.txt")
+    vm.load_program("test_files/Test2.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)
