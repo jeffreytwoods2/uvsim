@@ -1,16 +1,16 @@
 import unittest
 from unittest.mock import patch
 from io import StringIO
-from vm import VM
+from classes import VM, ProgramLoader
 
 class TestRead(unittest.TestCase):
-    @patch("vm.input", return_value="1")
+    @patch("classes.input", return_value="1")
     def test_positive_num(self, mock_input):
         vm = VM()
         vm.read_op(2)
         assert vm.memory[2] == "+0001"
 
-    @patch("vm.input", return_value="-1")
+    @patch("classes.input", return_value="-1")
     def test_negative_num(self, mock_input):
         vm = VM()
         vm.read_op(2)
@@ -218,7 +218,8 @@ class TestLoadProgram(unittest.TestCase):
     # Code correctly loads into VM
     def test_normal_load(self):
         vm = VM()
-        vm.load_program("test_files/Test1.txt")
+        pl = ProgramLoader()
+        pl.load(vm, "test_files/Test1.txt")
         with open("test_files/Test1.txt", "r") as f:
             lines = f.readlines()
             
@@ -230,14 +231,16 @@ class TestLoadProgram(unittest.TestCase):
     # File is rejected if larger than VM capacity
     def test_load_too_big(self):
         vm = VM()
+        pl = ProgramLoader()
         with self.assertRaises(Exception):
-            vm.load_program("test_files/TooLong.txt")
+            pl.load(vm, "test_files/TooLong.txt")
 
 class TestRun(unittest.TestCase):
     # Correctly executes first and last instruction in a max-length program
     def test_normal_run(self):
         vm = VM()
-        vm.load_program("test_files/FullProgram.txt")
+        pl = ProgramLoader()
+        pl.load(vm, "test_files/FullProgram.txt")
         vm.run()
         assert(vm.program_counter == 100)
 

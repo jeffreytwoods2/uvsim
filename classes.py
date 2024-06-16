@@ -83,19 +83,6 @@ class VM():
             contents = f"\n{i:02d}: {self.memory[i]}\t{i+20:02d}: {self.memory[i+20]}\t{i+40:02d}: {self.memory[i+40]}\t{i+60:02d}: {self.memory[i+60]}\t{i+80:02d}: {self.memory[i+80]}"
             vm_info += contents
         return vm_info
-    
-    def load_program(self, filepath: str):
-        with open(filepath, "r") as f:
-            lines = f.readlines()
-            if len(lines) > 100:
-                raise MemoryError("Program larger than available memory")
-            
-            for i in range(len(lines)):
-                code = lines[i].strip()
-                if len(code) != 5 or code[0] not in ('+', '-') or not code[1:].isdigit():
-                    raise ValueError(f"Invalid instruction: {code}")
-                
-                self.memory[i] = code
 
     def run(self):
         while True:
@@ -139,9 +126,34 @@ class VM():
             if self.accumulator_overflow():
                 self.truncate_accumulator()
 
+class ProgramLoader():
+    def load(self, vm: VM, filepath: str):
+        '''Loads user program into memory if it passes all validity checks'''
+        user_program = ["+0000"] * 100
+        has_halt = False
+        with open(filepath, "r") as f:
+            lines = f.readlines()
+            if len(lines) > 100:
+                raise MemoryError("Program larger than available memory")
+            
+            for i in range(len(lines)):
+                code = lines[i].strip()
+                if len(code) != 5 or code[0] not in ('+', '-') or not code[1:].isdigit():
+                    raise ValueError(f"Invalid instruction: {code}")
+                
+                if code[1:3] == "43":
+                    has_halt = True
+                
+                user_program[i] = code
+        if has_halt:
+            vm.memory = user_program
+        else:
+            raise RuntimeError("Program does not contain HALT instruction")
+
 if __name__ == "__main__":
     vm = VM()
-    vm.load_program("test_files/Test2.txt")
+    pl = ProgramLoader()
+    pl.load(vm, "test_files/Test2.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)

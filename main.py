@@ -1,4 +1,4 @@
-from vm import VM
+from classes import VM, ProgramLoader
 import os
 
 def get_file_path():
@@ -12,7 +12,8 @@ def get_file_path():
 def main():
     file_path = get_file_path()
     vm = VM()
-    vm.load_program(file_path)
+    pl = ProgramLoader()
+    pl.load(vm, file_path)
     vm.run()
 
 main()
