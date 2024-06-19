@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, ttk, simpledialog
 from classes import VM, ProgramLoader
 
 class VMHeader(tk.Label):
@@ -7,11 +7,11 @@ class VMHeader(tk.Label):
         super().__init__(master, **kwargs, font=("Helvetica", 16, "bold"), pady=10)
 
 class VMApp:
-    def __init__(self, root, vm, program_loader):
+    def __init__(self, root):
         self.root = root
         self.root.title("VM")
-        self.vm = vm
-        self.pl = program_loader
+        self.vm = VM()
+        self.pl = ProgramLoader()
 
         self.container = tk.Frame(self.root)
         self.container.pack(pady=50, padx=20)
@@ -29,9 +29,9 @@ class VMApp:
         self.console_container.pack(pady=30)
 
         self.populate_memory_container()
-        self.style_memory_tree()
         self.populate_accumulator_container()
         self.populate_console_container()
+        self.update_screen()
 
     def populate_memory_container(self):
         # Add a title header to the memory frame
@@ -54,7 +54,6 @@ class VMApp:
         # Center the column values
         self.memory_tree.column("Address", anchor=tk.CENTER, width=180)
         self.memory_tree.column("Value", anchor=tk.CENTER, width=180)
-        self.update_memory_tree()
         
         self.memory_tree.pack()
 
@@ -63,7 +62,7 @@ class VMApp:
         select_file_button.pack(pady=5)
 
         # Add a button to run the program
-        run_button = tk.Button(self.memory_container, text="Run Program", command=self.run_program)
+        run_button = tk.Button(self.memory_container, text="Run Program", command=self.run_from_start)
         run_button.pack()
 
     def style_memory_tree(self):
@@ -108,33 +107,33 @@ class VMApp:
         
         try:
             self.pl.load(self.vm, file_path)
-            self.update_memory_tree()
+            self.update_screen()
             messagebox.showinfo("Success!", "Your program is loaded and ready to run")
         except Exception as details:
             messagebox.showerror("Invalid File", details) 
-
-    def update_memory_tree(self):
+    
+    def update_screen(self):
+        # Update Memory 
         for item in self.memory_tree.get_children():
             self.memory_tree.delete(item)
 
         for i, value in enumerate(self.vm.memory):
             self.memory_tree.insert("", "end", values=(i, value))
+        self.style_memory_tree()
+        
+        self.accumulator_label.config(text=f"Accumulator: {self.vm.accumulator}")
+        self.pc_label.config(text=f"Program Counter: {self.vm.program_counter}")
         
         self.style_memory_tree()
-    
-    def update_accumulator_label(self):
-        self.accumulator_label.config(text=f"Accumulator: {self.vm.accumulator}")
-    
-    def update_pc_label(self):
-        self.pc_label.config(text=f"Program Counter: {self.vm.program_counter}")
-    
-    def run_program(self):
-        self.vm.run()
-        self.update_accumulator_label()
-        self.update_pc_label()
-        print(self.vm)
+
+    def run_from_start(self):
+        self.vm.program_counter = 0
+
+        for _ in self.vm.run_by_step():
+            self.update_screen()
+        self.update_screen()
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = VMApp(root, VM(), ProgramLoader())
+    app = VMApp(root)
     root.mainloop()
