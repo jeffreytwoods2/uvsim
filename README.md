@@ -53,9 +53,12 @@ Note: To run this software, you will need Python installed on your local machine
 From uvsim's root page on GitHub, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
 
 ### Running uvsim:
-To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py` If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed. This will run the program, which will then ask you to provide the name of your input file. Make sure that your input file (or the directory containing the file) is located in the same directory as main.py. If your input file is inside of a directory, provide the full path to the file, relative to the location of main.py.
+To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py` If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed.
 
 Alternatively, you can use __VS Code__ to run it. To do so, make sure you have the Python extension installed before opening the __uvsim_master__ directory. Once you have the `main.py` file open, run it by using the play button in the top-right corner of the editor,
+
+### Using uvsim:
+Once the program is up and running, start by clicking on the __Import File__ button. Select a file from your computer that you would like to run as the program. Once you've selected a valid file, click on the __Run Program__ button to process it.
 
 ### Note on input files:
 If you are wanting to process one of your own input files through uvsim, check the files in __test_files__ to get an idea of what the input file should look like. Note that the format for each line of your input file should be either `+` or `-`, followed by any 4 digits.
