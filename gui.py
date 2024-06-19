@@ -121,10 +121,9 @@ class VMApp:
             self.memory_tree.insert("", "end", values=(i, value))
         self.style_memory_tree()
         
+        # Update accumulator labvel and program counter label
         self.accumulator_label.config(text=f"Accumulator: {self.vm.accumulator}")
         self.pc_label.config(text=f"Program Counter: {self.vm.program_counter}")
-        
-        self.style_memory_tree()
 
     def run_from_start(self):
         self.vm.program_counter = 0
