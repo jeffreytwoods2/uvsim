@@ -84,48 +84,63 @@ class VM():
             vm_info += contents
         return vm_info
 
-    def run(self):
-        while True:
-            code = self.memory[self.program_counter]
-            sign: str = code[0]
-            opcode: str = code[1:3]
-            operand: int = int(code[3:5])
-            if sign == "-":
-                operand *= -1
+    def get_opcode(self: str):
+        code = self.memory[self.program_counter]
+        opcode: str = code[1:3]
+        return opcode
+    
+    def process_next_step(self):
+        code = self.memory[self.program_counter]
+        sign: str = code[0]
+        opcode: str = self.get_opcode()
+        operand: int = int(code[3:5])
+        if sign == "-":
+            operand *= -1
 
-            self.program_counter += 1
+        self.program_counter += 1
 
-            match opcode:
-                case "10":
-                    self.read_op(operand)
-                case "11":
-                    self.write_op(operand)
-                case "20":
-                    self.load_op(operand)
-                case "21":
-                    self.store_op(operand)
-                case "30":
-                    self.add_op(operand)
-                case "31":
-                    self.subtract_op(operand)
-                case "32":
-                    self.divide_op(operand)
-                case "33":
-                    self.multiply_op(operand)
-                case "40":
-                    self.branch_op(operand)
-                case "41":
-                    self.branchneg_op(operand)
-                case "42":
-                    self.branchzero_op(operand)
-                case "43":
-                    return
-                case _:
-                    raise ValueError(f"Invalid opcode: {opcode}")
+        match opcode:
+            case "10":
+                self.read_op(operand)
+            case "11":
+                self.write_op(operand)
+            case "20":
+                self.load_op(operand)
+            case "21":
+                self.store_op(operand)
+            case "30":
+                self.add_op(operand)
+            case "31":
+                self.subtract_op(operand)
+            case "32":
+                self.divide_op(operand)
+            case "33":
+                self.multiply_op(operand)
+            case "40":
+                self.branch_op(operand)
+            case "41":
+                self.branchneg_op(operand)
+            case "42":
+                self.branchzero_op(operand)
+            case "43":
+                return
+            case _:
+                raise ValueError(f"Invalid opcode: {opcode}")
             
-            if self.accumulator_overflow():
-                self.truncate_accumulator()
+        if self.accumulator_overflow():
+            self.truncate_accumulator()
 
+    def run(self):
+        while self.get_opcode() != "43":
+            self.process_next_step()
+        self.program_counter += 1
+    
+    def run_by_step(self):
+        while self.get_opcode() != "43":
+            self.process_next_step()
+            yield
+        self.program_counter += 1
+        
 class ProgramLoader():
     def load(self, vm: VM, filepath: str):
         '''Loads user program into memory if it passes all validity checks'''
