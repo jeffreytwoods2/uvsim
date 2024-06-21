@@ -118,10 +118,14 @@ class VMApp:
             self.memory_tree.delete(item)
 
         for i, value in enumerate(self.vm.memory):
-            self.memory_tree.insert("", "end", values=(i, value))
+            if i < 10:
+                address = "0" + str(i)
+            else:
+                address = str(i)
+            self.memory_tree.insert("", "end", values=(address, value))
         self.style_memory_tree()
         
-        # Update accumulator labvel and program counter label
+        # Update accumulator label and program counter label
         self.accumulator_label.config(text=f"Accumulator: {self.vm.accumulator}")
         self.pc_label.config(text=f"Program Counter: {self.vm.program_counter}")
 
