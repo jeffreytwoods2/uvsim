@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk, simpledialog
-from classes import VM, ProgramLoader
+from vm import VM, ProgramLoader
 
 class VMHeader(tk.Label):
     def __init__(self, master, **kwargs):

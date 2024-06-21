@@ -1,1 +1,1 @@
-from .classes import VM, ProgramLoader
+from .vm import VM, ProgramLoader

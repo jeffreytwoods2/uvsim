@@ -1,16 +1,16 @@
 import unittest
 from unittest.mock import patch
 from io import StringIO
-from classes import VM, ProgramLoader
+from vm import VM, ProgramLoader
 
 class TestRead(unittest.TestCase):
-    @patch("classes.input", return_value="1")
+    @patch("vm.input", return_value="1")
     def test_positive_num(self, mock_input):
         vm = VM()
         vm.read_op(2)
         assert vm.memory[2] == "+0001"
 
-    @patch("classes.input", return_value="-1")
+    @patch("vm.input", return_value="-1")
     def test_negative_num(self, mock_input):
         vm = VM()
         vm.read_op(2)
