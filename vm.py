@@ -16,9 +16,9 @@ class VM():
 
     def read_op(self, operand: int):
         '''Read a word from the keyboard into a specific location in memory'''
-        word = input('Please enter a four digit word:\n> ')
-        while int(word) > 9999 or int(word) < -9999:
-            word = input('Please enter a four digit word between -9999 and 9999:\n> ')
+        word = input('Please enter a four digit word:\n')
+        while not word.isnumeric() or int(word) > 9999 or int(word) < -9999:
+            word = input('Please enter a four digit word between -9999 and 9999:\n')
 
         if int(word) < 0:
             self.memory[operand] = f"{str(word).zfill(5)}"
@@ -59,12 +59,14 @@ class VM():
     def branch_op(self, addr: int):
         '''Branch to a specific location in memory'''
         if addr < 0:
+            print("Error: Invalid memory address. Program halted.")
             raise ValueError("Invalid memory address")
         self.program_counter = addr
     
     def branchneg_op(self, addr: int):
         '''Branch to a specific location in memory if the accumulator is negative'''
         if addr < 0:
+            print("Error: Invalid memory address. Program halted.")
             raise ValueError("Invalid memory address")
         if self.accumulator < 0:
             self.program_counter = addr
@@ -72,6 +74,7 @@ class VM():
     def branchzero_op(self, addr: int):
         '''Branch to a specific location in memory if the accumulator is zero'''
         if addr < 0:
+            print("Error: Invalid memory address. Program halted.")
             raise ValueError("Invalid memory address")
         if self.accumulator == 0:
             self.program_counter = addr
@@ -125,6 +128,7 @@ class VM():
             case "43":
                 return
             case _:
+                print(f"Error: invalid opcode: {opcode}. Program halted.")
                 raise ValueError(f"Invalid opcode: {opcode}")
             
         if self.accumulator_overflow():
@@ -133,12 +137,14 @@ class VM():
     def run(self):
         while self.get_opcode() != "43":
             self.process_next_step()
+        print("HALT.")
         self.program_counter += 1
     
     def run_by_step(self):
         while self.get_opcode() != "43":
             self.process_next_step()
             yield
+        print("HALT.")
         self.program_counter += 1
         
 class ProgramLoader():
@@ -149,11 +155,13 @@ class ProgramLoader():
         with open(filepath, "r") as f:
             lines = f.readlines()
             if len(lines) > 100:
+                print("Error: program larger than available memory. Program halted.")
                 raise MemoryError("Program larger than available memory")
             
             for i in range(len(lines)):
                 code = lines[i].strip()
                 if len(code) != 5 or code[0] not in ('+', '-') or not code[1:].isdigit():
+                    print(f"Error: invalid instruction: {code}. Program halted.")
                     raise ValueError(f"Invalid instruction: {code}")
                 
                 if code[1:3] == "43":
@@ -163,6 +171,7 @@ class ProgramLoader():
         if has_halt:
             vm.memory = user_program
         else:
+            print("Error: program does not contain HALT instruction. Program halted.")
             raise RuntimeError("Program does not contain HALT instruction")
 
 if __name__ == "__main__":
