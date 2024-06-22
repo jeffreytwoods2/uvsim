@@ -95,7 +95,7 @@ class VMApp:
 
     def on_enter_pressed(self, event=None):
         command = self.textbox.get("end-1c linestart", "end-1c lineend")
-        self.input_redirector.set_input(command)
+        self.input_redirector.set_input(command + "\n")
 
     def select_file(self):
         file_path = filedialog.askopenfilename()
