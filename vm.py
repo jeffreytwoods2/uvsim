@@ -175,13 +175,13 @@ class ProgramLoader():
             raise RuntimeError("Program does not contain HALT instruction")
 
     def load_string(self, vm: VM, program: str):
-        lines = program.split("\n")
-        if len(lines) > 100:
+        words = [line for line in program.split("\n") if line]
+        if len(words) > 100:
             raise MemoryError("Program larger than available memory")
         
-        for i, word in enumerate(program.split("\n")):
-            if word:
-                vm.memory[i] = word
+        vm.memory = ["+0000"] * 100
+        for i, word in enumerate(words):
+            vm.memory[i] = word
 
 if __name__ == "__main__":
     vm = VM()
