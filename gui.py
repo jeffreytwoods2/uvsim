@@ -116,6 +116,8 @@ class VMApp:
             messagebox.showinfo("Success!", "Your program is loaded and ready to run")
         except Exception as details:
             messagebox.showerror("Invalid File", details) 
+        
+        self.pl.force_load(file_path, self.program_editor)
     
     def update_screen(self):
         for item in self.memory_tree.get_children():

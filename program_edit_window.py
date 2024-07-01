@@ -28,8 +28,7 @@ class ProgramEditor:
             try:
                 self.parent_app.pl.load_string(self.parent_app.vm, text_content)
                 on_close()
-
-            except MemoryError as details:
+            except Exception as details:
                 messagebox.showerror("Invalid Program", details, parent=program_edit_window)
         
         def on_close():

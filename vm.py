@@ -148,6 +148,10 @@ class VM():
         self.program_counter += 1
         
 class ProgramLoader():
+    def validate_code_format(self, code: str):
+        if len(code) != 5 or code[0] not in ('+', '-') or not code[1:].isdigit():
+            raise ValueError(f"Invalid instruction: {code}")
+
     def load(self, vm: VM, filepath: str):
         '''Loads user program into memory if it passes all validity checks'''
         user_program = ["+0000"] * 100
@@ -155,14 +159,11 @@ class ProgramLoader():
         with open(filepath, "r") as f:
             lines = f.readlines()
             if len(lines) > 100:
-                print("Error: program larger than available memory. Program halted.")
                 raise MemoryError("Program larger than available memory")
             
             for i in range(len(lines)):
                 code = lines[i].strip()
-                if len(code) != 5 or code[0] not in ('+', '-') or not code[1:].isdigit():
-                    print(f"Error: invalid instruction: {code}. Program halted.")
-                    raise ValueError(f"Invalid instruction: {code}")
+                self.validate_code_format(code)
                 
                 if code[1:3] == "43":
                     has_halt = True
@@ -175,13 +176,25 @@ class ProgramLoader():
             raise RuntimeError("Program does not contain HALT instruction")
 
     def load_string(self, vm: VM, program: str):
+        '''Loads user program from a string'''
         words = [line for line in program.split("\n") if line]
         if len(words) > 100:
             raise MemoryError("Program larger than available memory")
-        
+
         vm.memory = ["+0000"] * 100
-        for i, word in enumerate(words):
-            vm.memory[i] = word
+        for i, code in enumerate(words):
+            self.validate_code_format(code)
+            vm.memory[i] = code
+    
+    def force_load(self, filepath: str, object):
+        '''Loads program into memory without regardless of validity'''
+        object.memory = []
+        with open(filepath, "r") as f:
+            lines = f.readlines()
+        
+        for line in lines:
+            code = line.strip()
+            object.memory.append(code)
 
 if __name__ == "__main__":
     vm = VM()
