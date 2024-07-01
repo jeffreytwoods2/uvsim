@@ -1,9 +1,9 @@
-import gui
+from gui import VMApp
 import tkinter as tk
 
 def main():
     root = tk.Tk()
-    gui.VMApp(root)
+    VMApp(root)
     root.mainloop()
 
 main()

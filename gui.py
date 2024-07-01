@@ -14,6 +14,7 @@ class VMApp:
         self.root.title("VM")
         self.vm = VM()
         self.pl = ProgramLoader()
+        self.program_editor_memory = []
 
         self.container = tk.Frame(self.root)
         self.container.pack(pady=50, padx=20)
@@ -40,7 +41,7 @@ class VMApp:
         sys.stdin = self.input_redirector
 
     def populate_memory_container(self):
-        memory_title = VMHeader(self.memory_container, text="Memory")
+        memory_title = tk.Label(self.memory_container, text="Memory")
         memory_title.pack(side=tk.TOP, anchor=tk.W)
 
         memory_frame = tk.Frame(self.memory_container)
@@ -60,14 +61,18 @@ class VMApp:
         
         self.memory_tree.pack()
 
-        select_file_button = tk.Button(self.memory_container, text="Import File", command=self.select_file)
-        select_file_button.pack(pady=5)
+        # Create a frame to hold the buttons
+        button_frame = tk.Frame(self.memory_container)
+        button_frame.pack(pady=10)
 
-        run_button = tk.Button(self.memory_container, text="Run Program", command=self.run_from_start)
-        run_button.pack()
+        select_file_button = tk.Button(button_frame, text="Import File", command=self.select_file)
+        select_file_button.pack(side=tk.LEFT, padx=5)
 
-        update_button = tk.Button(self.memory_container, text="Update Memory", command=self.update_memory)
-        update_button.pack()
+        run_button = tk.Button(button_frame, text="Run Program", command=self.run_from_start)
+        run_button.pack(side=tk.LEFT, padx=5)
+
+        update_button = tk.Button(button_frame, text="Write Program", command=self.write_program)
+        update_button.pack(side=tk.LEFT, padx=5)
 
     def style_memory_tree(self):
         self.memory_tree.tag_configure('evenrow', background='lightgrey')
@@ -135,8 +140,50 @@ class VMApp:
 
         threading.Thread(target=run_program).start()
     
-    def update_memory(self):
-        pass
+    def write_program(self):
+        def process_text():
+            text_content = self.text_area.get("1.0", tk.END).strip()
+            try:
+                self.pl.load_string(self.vm, text_content)
+                on_close()
+
+            except MemoryError as details:
+                messagebox.showerror("Invalid Program", details, parent=program_edit_window)
+            
+            self.update_screen()
+        
+        def on_close():
+            text_content = self.text_area.get("1.0", tk.END).strip()
+            self.program_editor_memory = [line for line in text_content.split("\n")]
+            program_edit_window.destroy()
+
+        program_edit_window = tk.Toplevel(self.root)
+        program_edit_window.title("Program Editor")
+        program_edit_window.protocol("WM_DELETE_WINDOW", on_close)
+        
+        self.root.update_idletasks() 
+        main_width = self.root.winfo_width()
+        main_height = self.root.winfo_height()
+        main_x = self.root.winfo_x()
+        main_y = self.root.winfo_y()
+
+        new_width = main_width // 2
+        new_height = main_height
+        
+        new_x = main_x + (main_width - new_width) // 2
+        new_y = main_y + (main_height - new_height) // 2
+        
+        program_edit_window.geometry(f"{new_width}x{new_height}+{new_x}+{new_y}")
+
+        self.text_area = tk.Text(program_edit_window, height=35, width=30)
+        self.text_area.pack(pady=5)
+
+        for word in self.program_editor_memory:
+            self.text_area.insert(tk.END, f"{word}\n")
+        
+        process_button = tk.Button(program_edit_window, text="Process", command=process_text)
+        process_button.pack(pady=5)
+    
 
 class TextRedirector:
     def __init__(self, widget, tag="stdout"):
@@ -147,6 +194,9 @@ class TextRedirector:
         self.widget.configure(state="normal")
         self.widget.insert("end", string, (self.tag,))
         self.widget.update()
+    
+    def flush(self):
+        pass
 
 class InputRedirector:
     def __init__(self, app):
