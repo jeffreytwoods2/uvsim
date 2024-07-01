@@ -66,6 +66,9 @@ class VMApp:
         run_button = tk.Button(self.memory_container, text="Run Program", command=self.run_from_start)
         run_button.pack()
 
+        update_button = tk.Button(self.memory_container, text="Update Memory", command=self.update_memory)
+        update_button.pack()
+
     def style_memory_tree(self):
         self.memory_tree.tag_configure('evenrow', background='lightgrey')
         for index, row in enumerate(self.memory_tree.get_children()):
@@ -131,6 +134,9 @@ class VMApp:
             self.update_screen()
 
         threading.Thread(target=run_program).start()
+    
+    def update_memory(self):
+        pass
 
 class TextRedirector:
     def __init__(self, widget, tag="stdout"):
@@ -141,9 +147,6 @@ class TextRedirector:
         self.widget.configure(state="normal")
         self.widget.insert("end", string, (self.tag,))
         self.widget.update()
-
-    def flush(self):
-        pass
 
 class InputRedirector:
     def __init__(self, app):
