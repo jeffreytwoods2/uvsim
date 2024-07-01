@@ -72,7 +72,7 @@ class VMApp:
         run_button = tk.Button(button_frame, text="Run Program", command=self.run_from_start)
         run_button.pack(side=tk.LEFT, padx=5)
 
-        update_button = tk.Button(button_frame, text="Write Program", command=self.write_program)
+        update_button = tk.Button(button_frame, text="Program Editor", command=self.open_program_editor)
         update_button.pack(side=tk.LEFT, padx=5)
 
     def style_memory_tree(self):
@@ -141,7 +141,7 @@ class VMApp:
 
         threading.Thread(target=run_program).start()
     
-    def write_program(self):
+    def open_program_editor(self):
         self.program_editor.open()
 
 class TextRedirector:
