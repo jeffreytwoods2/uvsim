@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk, simpledialog
 from vm import VM, ProgramLoader
+from program_edit_window import ProgramEditor
 import sys
 import threading
 
@@ -14,7 +15,7 @@ class VMApp:
         self.root.title("VM")
         self.vm = VM()
         self.pl = ProgramLoader()
-        self.program_editor_memory = []
+        self.program_editor = ProgramEditor(self)
 
         self.container = tk.Frame(self.root)
         self.container.pack(pady=50, padx=20)
@@ -141,49 +142,7 @@ class VMApp:
         threading.Thread(target=run_program).start()
     
     def write_program(self):
-        def process_text():
-            text_content = self.text_area.get("1.0", tk.END).strip()
-            try:
-                self.pl.load_string(self.vm, text_content)
-                on_close()
-
-            except MemoryError as details:
-                messagebox.showerror("Invalid Program", details, parent=program_edit_window)
-            
-            self.update_screen()
-        
-        def on_close():
-            text_content = self.text_area.get("1.0", tk.END).strip()
-            self.program_editor_memory = [line for line in text_content.split("\n")]
-            program_edit_window.destroy()
-
-        program_edit_window = tk.Toplevel(self.root)
-        program_edit_window.title("Program Editor")
-        program_edit_window.protocol("WM_DELETE_WINDOW", on_close)
-        
-        self.root.update_idletasks() 
-        main_width = self.root.winfo_width()
-        main_height = self.root.winfo_height()
-        main_x = self.root.winfo_x()
-        main_y = self.root.winfo_y()
-
-        new_width = main_width // 2
-        new_height = main_height
-        
-        new_x = main_x + (main_width - new_width) // 2
-        new_y = main_y + (main_height - new_height) // 2
-        
-        program_edit_window.geometry(f"{new_width}x{new_height}+{new_x}+{new_y}")
-
-        self.text_area = tk.Text(program_edit_window, height=35, width=30)
-        self.text_area.pack(pady=5)
-
-        for word in self.program_editor_memory:
-            self.text_area.insert(tk.END, f"{word}\n")
-        
-        process_button = tk.Button(program_edit_window, text="Process", command=process_text)
-        process_button.pack(pady=5)
-    
+        self.program_editor.open()
 
 class TextRedirector:
     def __init__(self, widget, tag="stdout"):
