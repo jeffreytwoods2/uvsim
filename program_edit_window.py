@@ -14,8 +14,8 @@ class ProgramEditor:
         main_x = self.root.winfo_x()
         main_y = self.root.winfo_y()
 
-        new_width = main_width // 2
-        new_height = main_height
+        new_width = 600
+        new_height = 600
         
         new_x = main_x + (main_width - new_width) // 2
         new_y = main_y + (main_height - new_height) // 2
@@ -43,11 +43,11 @@ class ProgramEditor:
         
         program_edit_window.geometry(self.calculate_window_placement())
 
-        self.text_area = tk.Text(program_edit_window, height=35, width=30)
-        self.text_area.pack(pady=5)
+        self.text_area = tk.Text(program_edit_window, height=30, width=30)
+        self.text_area.pack(pady=10)
 
         for word in self.memory:
             self.text_area.insert(tk.END, f"{word}\n")
         
         process_button = tk.Button(program_edit_window, text="Process", command=process_text)
-        process_button.pack(pady=5)
+        process_button.pack()
