@@ -58,7 +58,7 @@ To run uvsim, start by opening a new terminal or command line window. Then, navi
 Alternatively, you can use __VS Code__ to run it. To do so, make sure you have the Python extension installed before opening the __uvsim_master__ directory. Once you have the `main.py` file open, run it by using the play button in the top-right corner of the editor,
 
 ### Using uvsim:
-Once the program is up and running, start by clicking on the __Import File__ button. Select a file from your computer that you would like to run as the program. Once you've selected a valid file, click on the __Run Program__ button to process it.
+Once the program is up and running, start by clicking on the __Import File__ button. Select a file from your computer that you would like to run as the program. You can also click on the __Program Editor__ button which allows you to edit the contents of a file you've uploaded, or write a program completely from scratch. Once you've loaded your program into the system - either through a file import or manually - click on the __Run Program__ button to execute your program's instructions.
 
 ### Note on input files:
-If you are wanting to process one of your own input files through uvsim, check the files in __test_files__ to get an idea of what the input file should look like. Note that the format for each line of your input file should be either `+` or `-`, followed by any 4 digits.
+If you are wanting to process your own program through uvsim, check the files in __test_files__ to get an idea of what the program should look like. Note that the format for each line of your program should be either `+` or `-`, followed by the 4-digit instruction (see above for details on each instruction).
