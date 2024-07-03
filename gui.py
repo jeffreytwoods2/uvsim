@@ -164,15 +164,19 @@ class VMApp:
         self.accumulator_label.config(text=f"Accumulator: {self.vm.accumulator}")
         self.pc_label.config(text=f"Program Counter: {self.vm.program_counter}")
 
+    #Clear all fields and reset the VM state.
+    def clear_all_fields(self):
+        # Reset VM state
+        self.vm.program_counter = 0
+        self.vm.accumulator = 0
+        # Clear console
+        self.textbox.delete("1.0", "end")
+        self.update_screen()
+
     # Run the loaded program from the start
     def run_from_start(self):
         def run_program():
-            # Reset VM state
-            self.vm.program_counter = 0
-            self.vm.accumulator = 0
-            # Clear console
-            self.textbox.delete("1.0", "end")
-            self.update_screen()
+            self.clear_all_fields()
             # Run program step by step, updating GUI after each step
             for _ in self.vm.run_by_step():
                 self.update_screen()
