@@ -142,6 +142,7 @@ class VMApp:
         try:
             # Attempt to load the selected file
             self.pl.load(self.vm, file_path)
+            self.clear_all_fields()
             messagebox.showinfo("Success!", "Your program is loaded and ready to run")
         except Exception as details:
             messagebox.showerror("Invalid File", details) 
