@@ -4,8 +4,6 @@
 
 1. The system shall implement a READ operation where a word input from the keyboard is stored in a specific location in memory. 
 
- 
-
 2. The system shall implement a WRITE operation where a word from a specific location in memory is shown on the screen. 
 
 3. The system shall implement a LOAD operation where a word from a specific location in memory is loaded into the system’s accumulator. 
