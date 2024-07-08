@@ -39,15 +39,20 @@ class ProgramEditor:
         process_button.pack()
     
     def process_text(self):
-            text_content = self.text_area.get("1.0", tk.END).strip()
             try:
-                self.parent_app.pl.load_string(self.parent_app.vm, text_content)
+                self.parent_app.pl.load_string(self.parent_app.vm, self.get_file_content())
+                self.save_memory()
                 self.on_close()
             except Exception as details:
                 messagebox.showerror("Invalid Program", details, parent=self.program_edit_window)
         
     def on_close(self):
-        text_content = self.text_area.get("1.0", tk.END).strip()
-        self.memory = [line for line in text_content.split("\n")]
-        self.parent_app.update_screen()
         self.program_edit_window.destroy()
+        self.parent_app.clear_all_fields()
+        self.parent_app.update_screen()
+    
+    def save_memory(self):
+        self.memory = [line for line in self.get_file_content().split("\n")]
+    
+    def get_file_content(self):
+        return self.text_area.get("1.0", tk.END).strip()
