@@ -23,31 +23,31 @@ class ProgramEditor:
         return f"{new_width}x{new_height}+{new_x}+{new_y}"
 
     def open(self):
-        def process_text():
-            text_content = self.text_area.get("1.0", tk.END).strip()
-            try:
-                self.parent_app.pl.load_string(self.parent_app.vm, text_content)
-                on_close()
-            except Exception as details:
-                messagebox.showerror("Invalid Program", details, parent=program_edit_window)
+        self.program_edit_window = tk.Toplevel(self.root)
+        self.program_edit_window.title("Program Editor")
+        self.program_edit_window.protocol("WM_DELETE_WINDOW", self.on_close)
         
-        def on_close():
-            text_content = self.text_area.get("1.0", tk.END).strip()
-            self.memory = [line for line in text_content.split("\n")]
-            self.parent_app.update_screen()
-            program_edit_window.destroy()
+        self.program_edit_window.geometry(self.calculate_window_placement())
 
-        program_edit_window = tk.Toplevel(self.root)
-        program_edit_window.title("Program Editor")
-        program_edit_window.protocol("WM_DELETE_WINDOW", on_close)
-        
-        program_edit_window.geometry(self.calculate_window_placement())
-
-        self.text_area = tk.Text(program_edit_window, height=30, width=30)
+        self.text_area = tk.Text(self.program_edit_window, height=30, width=30)
         self.text_area.pack(pady=10)
 
         for word in self.memory:
             self.text_area.insert(tk.END, f"{word}\n")
         
-        process_button = tk.Button(program_edit_window, text="Process", command=process_text)
+        process_button = tk.Button(self.program_edit_window, text="Process", command=self.process_text)
         process_button.pack()
+    
+    def process_text(self):
+            text_content = self.text_area.get("1.0", tk.END).strip()
+            try:
+                self.parent_app.pl.load_string(self.parent_app.vm, text_content)
+                self.on_close()
+            except Exception as details:
+                messagebox.showerror("Invalid Program", details, parent=self.program_edit_window)
+        
+    def on_close(self):
+        text_content = self.text_area.get("1.0", tk.END).strip()
+        self.memory = [line for line in text_content.split("\n")]
+        self.parent_app.update_screen()
+        self.program_edit_window.destroy()
