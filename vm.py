@@ -177,12 +177,14 @@ class ProgramLoader():
 
     def load_string(self, vm: VM, program: str):
         '''Loads user program from a string'''
-        words = [line for line in program.split("\n") if line]
+        words = [line.strip() for line in program.split("\n")]
         if len(words) > 100:
             raise MemoryError("Program larger than available memory")
 
         vm.memory = ["+0000"] * 100
         for i, code in enumerate(words):
+            if not code:
+                continue
             self.validate_code_format(code)
             vm.memory[i] = code
     
