@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, ttk, WORD
 import sys
 import threading
 from vm import VM, ProgramLoader
@@ -134,7 +134,7 @@ class VMApp:
         VMHeader(self.right_frame, text="Console").grid(row=1, column=0, sticky="w", padx=10, pady=(10, 0))
         
         # Create and configure the console text box
-        self.console_text = ctk.CTkTextbox(self.right_frame, height=200, width=300)
+        self.console_text = ctk.CTkTextbox(self.right_frame, height=200, width=300, wrap=WORD)
         self.console_text.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
         self.console_text.bind("<Return>", self.on_enter_pressed)
 
