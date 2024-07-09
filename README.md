@@ -48,6 +48,10 @@ The last two digits of a BasicML instruction are the operand – the address of 
 
 ## Getting Started on uvsim:
 Note: To run this software, you will need Python installed on your local machine.
+install the following module with pip:
+	pip install customtkinter
+	Update existing installation: pip install customtkinter --upgrade
+ (Reminder: format better later)
 
 ### Installing uvsim:
 From uvsim's root page on GitHub, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
@@ -60,5 +64,8 @@ Alternatively, you can use __VS Code__ to run it. To do so, make sure you have t
 ### Using uvsim:
 Once the program is up and running, start by clicking on the __Import File__ button to select a file from your computer that you would like to run as the program. You can also click on the __Program Editor__ button which allows you to edit the contents of a file you've uploaded, or write a program completely from scratch. Once you've loaded your program into the system - either through a file import or manually - click on the __Run Program__ button to execute your program's instructions.
 
+If you are using VS Code to run  the program and customtkinter is not recognized after you installed it, this might be caused by an incorrect Python interpreter
+You can use shortcuts "Ctrl+Shift+P" and type "Python: Select Interpreter" to choose your virtual environment.
+
 ### Note on input files:
-If you are wanting to process your own program through uvsim, check the files in __test_files__ to get an idea of what the program should look like. Note that the format for each line of your program should be either `+` or `-`, followed by the 4-digit instruction (see above for details on each instruction).
+If you want to process your own program through uvsim, check the files in __test_files__ to get an idea of what the program should look like. Note that the format for each line of your program should be either `+` or `-`, followed by the 4-digit instruction (see above for details on each instruction).
