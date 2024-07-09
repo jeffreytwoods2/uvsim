@@ -16,9 +16,16 @@ class VM():
 
     def read_op(self, operand: int):
         '''Read a word from the keyboard into a specific location in memory'''
-        word = input('Please enter a four digit word:\n')
-        while not word.isnumeric() or int(word) > 9999 or int(word) < -9999:
-            word = input('Please enter a four digit word between -9999 and 9999:\n')
+        try:
+            word = input('Please enter a four digit word:\n')
+            while not word.isnumeric() or int(word) > 9999 or int(word) < -9999:
+                word = input('Please enter a four digit word between -9999 and 9999:\n')
+        except EOFError:
+            print("\n" + "-" * 40)
+            print("Please enter input on the last line of the console. Try again.")
+            print("-" * 40, end="\n\n")
+            self.read_op(operand)
+            return
 
         if int(word) < 0:
             self.memory[operand] = f"{str(word).zfill(5)}"
