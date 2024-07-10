@@ -18,7 +18,7 @@ class VM():
         '''Read a word from the keyboard into a specific location in memory'''
         try:
             word = input('Please enter a four digit word:\n')
-            while not word.isnumeric() or int(word) > 9999 or int(word) < -9999:
+            while not word.lstrip("-").isnumeric() or int(word) > 9999 or int(word) < -9999:
                 word = input('Please enter a four digit word between -9999 and 9999:\n')
         except EOFError:
             print("\n" + "-" * 40)
