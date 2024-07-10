@@ -61,11 +61,21 @@ To run uvsim, start by opening a new terminal or command line window. Then, navi
 
 Alternatively, you can use __VS Code__ to run it. To do so, make sure you have the Python extension installed before opening the __uvsim_master__ directory. Once you have the `main.py` file open, run it by using the play button in the top-right corner of the editor,
 
+If you are using VS Code to run  the program and customtkinter is not recognized after you installed it, this might be caused by an incorrect Python interpreter
+You can use shortcuts "Ctrl+Shift+P" and type "Python: Select Interpreter" to choose your virtual environment.
+
 ### Using uvsim:
 Once the program is up and running, start by clicking on the __Import File__ button to select a file from your computer that you would like to run as the program. You can also click on the __Program Editor__ button which allows you to edit the contents of a file you've uploaded, or write a program completely from scratch. Once you've loaded your program into the system - either through a file import or manually - click on the __Run Program__ button to execute your program's instructions.
 
-If you are using VS Code to run  the program and customtkinter is not recognized after you installed it, this might be caused by an incorrect Python interpreter
-You can use shortcuts "Ctrl+Shift+P" and type "Python: Select Interpreter" to choose your virtual environment.
+Any keyboard input requests from the program will appear in the __Console__. Click into the console, ensure that you cursor is below all text on its own newline, and then type the requested input. Press __Enter__ to submit your input to the program.
+
+In the __Memory__ section of the GUI window, you will see the entire contents of the machine's 100-address memory; the memory will always stay up to date as the machine progresses through each program, keeping you informed of the machine's current state at any given time.
+
+In the __Status__ section, you will see the value currently loaded in the accumulator. The accumulator serves as temporary storage for the results of operations; at the end of all relevant operations, the value is most often stored back in memory. Beneath the accumulator is the Program Counter; this register points to whichever instruction the machine will execute next. You can keep an eye on the Program Counter as it updates live to debug and verify the execution of your program.
+
+When you have finished running a program, you can load another using the steps mentioned above, and all fields in the GUI will clear their outdated contents and load in values from the new program.
+
+When you are done using UVSim, click the __Close__ button at the top to terminate the program (exact details of the button will vary by platform).
 
 ### Note on input files:
 If you want to process your own program through uvsim, check the files in __test_files__ to get an idea of what the program should look like. Note that the format for each line of your program should be either `+` or `-`, followed by the 4-digit instruction (see above for details on each instruction).
