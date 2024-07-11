@@ -4,6 +4,15 @@ class VM():
         self.program_counter = 0
         self.accumulator = 0
     
+    def is_valid_word(self, word: str) -> bool:
+        try:
+            int_value = int(word)
+        except ValueError:
+            return False
+        
+        return -9999 <= int_value <= 9999
+
+
     def accumulator_overflow(self):
         return self.accumulator > 9999 or self.accumulator < -9999
     
@@ -18,8 +27,9 @@ class VM():
         '''Read a word from the keyboard into a specific location in memory'''
         try:
             word = input('Please enter a four digit word:\n')
-            while not word.isnumeric() or int(word) > 9999 or int(word) < -9999:
+            while not self.is_valid_word(word):
                 word = input('Please enter a four digit word between -9999 and 9999:\n')
+                
         except EOFError:
             print("\n" + "-" * 40)
             print("Please enter input on the last line of the console. Try again.")
