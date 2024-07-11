@@ -12,7 +12,6 @@ class VM():
         
         return -9999 <= int_value <= 9999
 
-
     def accumulator_overflow(self):
         return self.accumulator > 9999 or self.accumulator < -9999
     
