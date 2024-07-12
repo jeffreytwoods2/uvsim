@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 
 class ProgramEditor:
     def __init__(self, parent_app):
@@ -37,6 +37,9 @@ class ProgramEditor:
         
         process_button = tk.Button(self.program_edit_window, text="Process", command=self.process_text)
         process_button.pack()
+
+        save_button = tk.Button(self.program_edit_window, text="Save", command=self.save_file)
+        save_button.pack()
     
     def process_text(self):
             try:
@@ -53,6 +56,15 @@ class ProgramEditor:
     
     def save_memory(self):
         self.memory = [line for line in self.get_file_content().split("\n")]
+
+    def save_file(self):
+        text = self.get_file_content()
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                filetypes=[("Text files", "*.txt"),
+                                                            ("All files", "*.*")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(text)
     
     def get_file_content(self):
         return self.text_area.get("1.0", tk.END).strip()
