@@ -109,6 +109,7 @@ class VMApp:
         ctk.CTkButton(button_frame, text="Import File", command=self.select_file).grid(row=0, column=0, padx=5, pady=5)
         ctk.CTkButton(button_frame, text="Run Program", command=self.run_from_start).grid(row=0, column=1, padx=5, pady=5)
         ctk.CTkButton(button_frame, text="Program Editor", command=self.open_program_editor).grid(row=0, column=2, padx=5, pady=5)
+        ctk.CTkButton(button_frame, text="Save File", command=self.save_file).grid(row=1, column=0, padx=5, pady=5)
 
     def populate_right_frame(self):
         # Configure the grid layout for the right frame
@@ -207,6 +208,18 @@ class VMApp:
     def open_program_editor(self):
         # Open the program editor window
         self.program_editor.open()
+    
+    def save_file(self):
+        contents = ""
+        for item in self.vm.memory:
+            contents += item
+
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                filetypes=[("Text files", "*.txt"),
+                                                            ("All files", "*.*")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(contents)
 
 # Class to redirect stdout to the GUI console
 class TextRedirector:
