@@ -211,8 +211,8 @@ class VMApp:
     
     def save_file(self):
         contents = ""
-        for item in self.vm.memory:
-            contents += item
+        for item in self.program_editor.memory:
+            contents += f"{item}\n"
 
         file_path = filedialog.asksaveasfilename(defaultextension=".txt",
                                                 filetypes=[("Text files", "*.txt"),
