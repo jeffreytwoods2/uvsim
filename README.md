@@ -57,7 +57,21 @@ install the following module with pip:
 From uvsim's root page on GitHub, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
 
 ### Running uvsim:
-To run uvsim, start by opening a new terminal or command line window. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). Finally, run the command `python3 main.py` If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed.
+To run uvsim, start by opening a new terminal or command line window. If you are using Windows, make sure to open your terminal application as an administrator. Then, navigate to the __uvsim_master__ directory (the location of this directory will depend on where you extracted the __.zip__ file). A virtual environment configuration exists to ensure that the Python packages necessary for this program do not conflict with any that may be saved on your machine. Before attempting to run the program, perform the following steps to enter the virtual environment:
+
+#### Windows
+1. In Powershell and related terminals, type `.\bin\Activate.ps1`. In CMD Prompt, type `.\bin\activate.bat`.
+2. Run the command `pip install -r requirements.txt`.
+3. To exit the virtual environment when you are done using the program, type `deactivate`.
+
+#### Mac/Linux
+1. Run the command `source ./bin/activate`.
+2. Run `pip install -r requirements.txt`.
+3. When you are finished, run `deactivate`.
+
+MacOS may not be able to run the custom Tkinter package inside of the venv depending on how you installed Python. If you use homebrew to install python-tk, the Tkinter package should then work correctly in venv.
+
+Finally, run the command `python3 main.py` If this doesn't work, you can also try replacing __python3__ with just __python__, or whichever version of python you have installed.
 
 Alternatively, you can use __VS Code__ to run it. To do so, make sure you have the Python extension installed before opening the __uvsim_master__ directory. Once you have the `main.py` file open, run it by using the play button in the top-right corner of the editor,
 
@@ -72,6 +86,8 @@ Any keyboard input requests from the program will appear in the __Console__. Cli
 In the __Memory__ section of the GUI window, you will see the entire contents of the machine's 100-address memory; the memory will always stay up to date as the machine progresses through each program, keeping you informed of the machine's current state at any given time.
 
 In the __Status__ section, you will see the value currently loaded in the accumulator. The accumulator serves as temporary storage for the results of operations; at the end of all relevant operations, the value is most often stored back in memory. Beneath the accumulator is the Program Counter; this register points to whichever instruction the machine will execute next. You can keep an eye on the Program Counter as it updates live to debug and verify the execution of your program.
+
+If you've altered a program with the Program Editor and you'd like to save it as a new file, click __Save File__. A dialog window will open, allowing you to select the filename you'd like as well as the directory to save it in. The file extension should be set automatically, but if it isn't on your system, make sure to set it to ".txt", as this is the only file type that the VM accepts.
 
 When you have finished running a program, you can load another using the steps mentioned above, and all fields in the GUI will clear their outdated contents and load in values from the new program.
 
