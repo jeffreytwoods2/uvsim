@@ -1,9 +1,8 @@
 from gui import VMApp
-import tkinter as tk
+import customtkinter as ctk
 
 def main():
-    print("hi")
-    root = tk.Tk()
+    root = ctk.CTk()
     VMApp(root)
     root.mainloop()
 

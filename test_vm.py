@@ -3,6 +3,19 @@ from unittest.mock import patch
 from io import StringIO
 from vm import VM, ProgramLoader
 
+class TestIsValidWord(unittest.TestCase):
+    def test_valid_word(self):
+        vm = VM()
+        assert vm.is_valid_word("+0001") == True
+        assert vm.is_valid_word("-0001") == True
+        assert vm.is_valid_word("9999") == True
+    
+    def test_invalid_word(self):
+        vm = VM()
+        assert vm.is_valid_word("Dog") == False
+        assert vm.is_valid_word("-10000") == False
+        assert vm.is_valid_word("+10000") == False
+
 class TestRead(unittest.TestCase):
     @patch("vm.input", return_value="1")
     def test_positive_num(self, mock_input):

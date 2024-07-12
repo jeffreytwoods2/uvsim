@@ -8,7 +8,7 @@ from program_edit_window import ProgramEditor
 # Custom header label for sections in the GUI
 class VMHeader(ctk.CTkLabel):
     def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs, font=("Helvetica", 20, "bold"), pady=10)
+        super().__init__(master, **kwargs, font=("Helvetica", 20, "bold"))
 
 # Main application class for the VM Simulator
 class VMApp:
@@ -16,21 +16,23 @@ class VMApp:
         self.root = root
         self.root.title("VM Simulator")
         
-        # Set initial window size to 800x600 pixels
+        # Set initial window size
         window_width = 800
         window_height = 600
-        self.root.geometry(f"{window_width}x{window_height}")
         
-        # Center the window on the screen
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
+        
         center_x = int(screen_width/2 - window_width/2)
         center_y = int(screen_height/2 - window_height/2)
-        self.root.geometry(f'+{center_x}+{center_y}')
+        # Center the window on the screen
+        self.root.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
         
         # Set the appearance mode custom color theme
         ctk.set_default_color_theme("theme.json")
-        ctk.set_appearance_mode("light")
+        ctk.set_appearance_mode("dark")
+        #Set backgroud color of the window
+        self.root.configure(fg_color="gray87")
 
         # Initialize the Virtual Machine and Program Loader
         self.vm = VM()
@@ -46,12 +48,12 @@ class VMApp:
 
         # Create and populate the left frame (Memory and control buttons)
         self.left_frame = ctk.CTkFrame(self.root)
-        self.left_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        self.left_frame.grid(row=0, column=0, padx=18, pady=20, sticky="nsew")
         self.populate_left_frame()
 
         # Create and populate the right frame (Status and Console)
         self.right_frame = ctk.CTkFrame(self.root)
-        self.right_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
+        self.right_frame.grid(row=0, column=1, padx=18, pady=20, sticky="nsew")
         self.populate_right_frame()
 
         # Update the GUI to reflect the initial state of the VM
@@ -72,12 +74,8 @@ class VMApp:
         VMHeader(self.left_frame, text="Memory").grid(row=0, column=0, sticky="w", padx=10, pady=(10, 0))
 
         style = ttk.Style()
-        style.configure("Custom.Treeview", 
-                        font=('Helvetica', 20),
-                        rowheight=30)
-        style.configure("Custom.Treeview.Heading", 
-                        font=('Helvetica', 24, 'bold'),
-                        rowheight=30)
+        style.configure("Custom.Treeview", font=('Helvetica', 20), rowheight=30)
+        style.configure("Custom.Treeview.Heading", font=('Helvetica', 22, 'bold'))
 
         # Create a frame to hold the Treeview and Scrollbar
         tree_frame = ctk.CTkFrame(self.left_frame)
@@ -86,13 +84,9 @@ class VMApp:
         tree_frame.grid_columnconfigure(0, weight=1)
 
         # Create the Treeview
-        self.memory_tree = ttk.Treeview(
-            tree_frame,
-            columns=("Address", "Value"),
-            show="headings",
-            height=20,
-            style="Custom.Treeview"
-        )
+        self.memory_tree = ttk.Treeview(tree_frame, columns=("Address", "Value"),
+            show="headings", style="Custom.Treeview")
+        
         self.memory_tree.heading("Address", text="Address")
         self.memory_tree.heading("Value", text="Value")
         self.memory_tree.column("Address", anchor="center", width=180)
@@ -108,7 +102,7 @@ class VMApp:
 
         # Create a frame for the control buttons
         button_frame = ctk.CTkFrame(self.left_frame)
-        button_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=10)
+        button_frame.grid(row=2, column=0, sticky="ew", padx=(10,25), pady=10)
         button_frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         # Add control buttons: Import File, Run Program, and Program Editor
@@ -123,7 +117,7 @@ class VMApp:
 
         # Create and populate the status section
         status_frame = ctk.CTkFrame(self.right_frame)
-        status_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        status_frame.grid(row=0, column=0, padx=(15,5), pady=10, sticky="ew")
         VMHeader(status_frame, text="Status").pack(anchor="w")
         self.accumulator_label = ctk.CTkLabel(status_frame, text=f"Accumulator: {self.vm.accumulator}")
         self.accumulator_label.pack(anchor="w")
@@ -131,7 +125,7 @@ class VMApp:
         self.pc_label.pack(anchor="w")
 
         # Add the "Console" header
-        VMHeader(self.right_frame, text="Console").grid(row=1, column=0, sticky="w", padx=10, pady=(10, 0))
+        VMHeader(self.right_frame, text="Console").grid(row=1, column=0, sticky="w", padx=10, pady=(5, 0))
         
         # Create and configure the console text box
         self.console_text = ctk.CTkTextbox(self.right_frame, height=200, width=300, wrap=WORD)
