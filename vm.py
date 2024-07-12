@@ -30,9 +30,9 @@ class VM():
                 word = input('Please enter a four digit word between -9999 and 9999:\n')
                 
         except EOFError:
-            print("\n" + "-" * 40)
+            print("\n" + "-" * 38)
             print("Please enter input on the last line of the console. Try again.")
-            print("-" * 40, end="\n\n")
+            print("-" * 38, end="\n\n")
             self.read_op(operand)
             return
 
