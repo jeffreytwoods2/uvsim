@@ -2,6 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox, ttk, WORD
 import sys
 import threading
+from queue import Queue
 from vm import VM, ProgramLoader
 from program_edit_window import ProgramEditor
 from json.decoder import JSONDecodeError
@@ -44,7 +45,7 @@ class VMApp:
         self.vm = VM()
         self.pl = ProgramLoader()
         self.program_editor = ProgramEditor(self)
-        
+        self.waiting_for_input = False
 
         # Configure the main grid layout
         # The left column (index 0) has a weight of 3, making it wider than the right column
@@ -62,14 +63,16 @@ class VMApp:
         self.right_frame.grid(row=0, column=1, padx=18, pady=20, sticky="nsew")
         self.populate_right_frame()
 
-        # Update the GUI to reflect the initial state of the VM
-        self.update_screen()
+        # Set up input redirection for the console
+        self.input_queue = Queue()
+        self.input_redirector = InputRedirector(self.input_queue, self)
+        sys.stdin = self.input_redirector
 
         # Redirect standard output to the GUI console
-        sys.stdout = TextRedirector(self.console_text, "stdout")
-        # Set up input redirection for the console
-        self.input_redirector = InputRedirector(self)
-        sys.stdin = self.input_redirector
+        sys.stdout = TextRedirector(self.console_text, self, "stdout")
+
+        # Update the GUI to reflect the initial state of the VM
+        self.update_screen()
 
     def populate_left_frame(self):
         # Configure the grid layout for the left frame
@@ -143,13 +146,24 @@ class VMApp:
         self.enter_button = ctk.CTkButton(self.right_frame, text="Enter", command=self.on_enter_pressed)
         self.enter_button.grid(row=3, column=0, pady=(0, 10))
 
+        # Display initial prompt
+        self.display_prompt()
+
     def on_enter_pressed(self, event=None):
-        # Get the last line of text from the console (user input)
-        command = self.console_text.get("end-1c linestart", "end-1c lineend")
-        # Pass the input to the input redirector
-        self.input_redirector.set_input(command)
-        # Add a newline for visual feedback
-        self.console_text.insert("end", "\n")
+        if self.waiting_for_input:
+            # Get the last line of text from the console (user input)
+            input_start = self.console_text.index("end-1c linestart")
+            command = self.console_text.get(f"{input_start}+2c", "end-1c")
+
+            # Add a newline
+            self.console_text.insert("end", "\n")
+            # Pass the input to the input queue
+            self.input_queue.put(command)
+            # Reset waiting_for_input flag
+            self.waiting_for_input = False
+        else:
+            # If not waiting for input, just add a newline
+            self.console_text.insert("end", "\n")
 
     def select_file(self):
         # Open a file dialog for the user to select a program file
@@ -167,6 +181,11 @@ class VMApp:
         # Force load the file into the program editor
         self.pl.force_load(file_path, self.program_editor)
 
+    def display_prompt(self):
+        if self.waiting_for_input:
+            self.console_text.insert("end", "> ")
+        self.console_text.see("end")
+
     def update_screen(self):
         # Clear the existing memory display
         for item in self.memory_tree.get_children():
@@ -181,6 +200,9 @@ class VMApp:
         # Update the accumulator and program counter labels
         self.accumulator_label.configure(text=f"Accumulator: {self.vm.accumulator}")
         self.pc_label.configure(text=f"Program Counter: {self.vm.program_counter}")
+        
+        # Ensure the console is scrolled to the bottom
+        self.console_text.see("end")
 
     def style_memory_tree(self):
         # Apply alternating row colors to the memory display
@@ -230,16 +252,17 @@ class VMApp:
 
 # Class to redirect stdout to the GUI console
 class TextRedirector:
-    def __init__(self, widget, tag="stdout"):
+    def __init__(self, widget, app, tag="stdout"):
         self.widget = widget
+        self.app = app
         self.tag = tag
 
     def write(self, string):
-        # Write the string to the console widget
-        self.widget.configure(state="normal")
         self.widget.insert("end", string, (self.tag,))
         self.widget.see("end")
-        self.widget.configure(state="disabled")
+        # Only display a prompt if we're waiting for input
+        if self.app.waiting_for_input:
+            self.app.display_prompt()
 
     def flush(self):
         # Required for file-like objects, but no action needed
@@ -247,21 +270,16 @@ class TextRedirector:
 
 # Class to handle input redirection from the GUI console
 class InputRedirector:
-    def __init__(self, app):
+    def __init__(self, input_queue, app):
+        self.input_queue = input_queue
         self.app = app
-        self.input_ready = threading.Event()
-        self.input_value = None
-
-    def set_input(self, value):
-        # Set the input value and signal that input is ready
-        self.input_value = value
-        self.input_ready.set()
 
     def readline(self):
-        # Wait for input to be ready, then return it
-        self.input_ready.wait()
-        self.input_ready.clear()
-        return self.input_value
+        self.app.waiting_for_input = True
+        self.app.display_prompt()
+        result = self.input_queue.get() + '\n'
+        self.app.waiting_for_input = False
+        return result
 
 # Main entry point of the application
 if __name__ == "__main__":
