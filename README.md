@@ -48,10 +48,6 @@ The last two digits of a BasicML instruction are the operand – the address of 
 
 ## Getting Started on uvsim:
 Note: To run this software, you will need Python installed on your local machine.
-install the following module with pip:
-	pip install customtkinter
-	Update existing installation: pip install customtkinter --upgrade
- (Reminder: format better later)
 
 ### Installing uvsim:
 From uvsim's root page on GitHub, click on the green __<> Code__ button. This will open up a small menu, at the bottom of which you will need to click __Download ZIP__. This will download a __.zip__ folder with all of the necessary files onto your local machine. Go ahead and extract them into a directory of your choice.
