@@ -4,6 +4,7 @@ import sys
 import threading
 from vm import VM, ProgramLoader
 from program_edit_window import ProgramEditor
+from json.decoder import JSONDecodeError
 
 # Custom header label for sections in the GUI
 class VMHeader(ctk.CTkLabel):
@@ -29,10 +30,15 @@ class VMApp:
         self.root.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
         
         # Set the appearance mode custom color theme
-        ctk.set_default_color_theme("theme.json")
-        ctk.set_appearance_mode("dark")
+        # The try block is for unit test purposes
+        try:
+            ctk.set_default_color_theme("theme.json")
+            ctk.set_appearance_mode("dark")
+        except JSONDecodeError:
+            pass
+
         #Set backgroud color of the window
-        self.root.configure(fg_color="gray87")
+            self.root.configure(fg_color="gray87")
 
         # Initialize the Virtual Machine and Program Loader
         self.vm = VM()
@@ -210,6 +216,7 @@ class VMApp:
         self.program_editor.open()
     
     def save_file(self):
+        # Save the contents of the user program as a txt
         contents = ""
         for item in self.program_editor.memory:
             contents += f"{item}\n"

@@ -1,7 +1,10 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 from io import StringIO
 from vm import VM, ProgramLoader
+from gui import VMApp
+import customtkinter as ctk
+from json.decoder import JSONDecodeError
 
 class TestIsValidWord(unittest.TestCase):
     def test_valid_word(self):
@@ -263,6 +266,25 @@ class TestRun(unittest.TestCase):
         vm.memory[0] = "+9900"
         with self.assertRaises(Exception):
             vm.run()
+
+class TestSaveFileMethod(unittest.TestCase):
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('tkinter.filedialog.asksaveasfilename', return_value='test.txt')
+    def test_save_file(self, mock_asksaveasfilename, mock_open):
+        root = ctk.CTk()
+        app = VMApp(root)
+        app.program_editor = type('', (), {})()
+        app.program_editor.memory = ["+0001", "+0002"]
+        app.save_file()
+
+        # Check if asksaveasfilename was called once
+        mock_asksaveasfilename.assert_called_once()
+
+        # Check if the file was opened correctly
+        mock_open.assert_called_with('test.txt', 'w')
+
+        # Check if the contents were written correctly
+        mock_open().write.assert_called_once_with("+0001\n+0002\n")
 
 if __name__ == "__main__":
     unittest.main()
