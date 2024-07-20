@@ -175,7 +175,7 @@ class VM():
         
 class ProgramLoader():
     def validate_code_format(self, code: str):
-        if len(code) != vm.word_length + 1 or code[0] not in ('+', '-') or not code[1:].isdigit():
+        if len(code) != 7 or code[0] not in ('+', '-') or not code[1:].isdigit():
             raise ValueError(f"Invalid instruction: {code}")
 
     def load(self, vm: VM, filepath: str):
