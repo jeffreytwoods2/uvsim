@@ -122,6 +122,11 @@ class VM():
         sign: str = code[0]
         opcode: str = self.get_opcode()
         operand: int = int(code[4:7])
+
+        if operand > self.memory_length - 1:
+            print(f"Error: Address {str(self.program_counter).zfill(3)} targets invalid memory adderss {operand}. Program halted.")
+            raise ValueError(f"Invalid memory address: {operand}")
+        
         if sign == "-":
             operand *= -1
 
