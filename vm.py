@@ -5,6 +5,7 @@ class VM():
         self.accumulator = 0
     
     def is_valid_word(self, word: str) -> bool:
+        '''Check if a word is a valid four digit word'''
         try:
             int_value = int(word)
         except ValueError:
