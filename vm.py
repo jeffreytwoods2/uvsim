@@ -1,6 +1,8 @@
 class VM():
+    memory_length = 250
+
     def __init__(self):
-        self.memory = ["+0000"] * 100
+        self.memory = ["+0000"] * self.memory_length
         self.program_counter = 0
         self.accumulator = 0
     
@@ -97,10 +99,12 @@ class VM():
             self.program_counter = addr
     
     def __str__(self):
-        print("~" * 50)
-        vm_info = f"Program Counter: {self.program_counter}\nAccumulator: {self.accumulator}\nMemory:"
-        for i in range(20):
-            contents = f"\n{i:02d}: {self.memory[i]}\t{i+20:02d}: {self.memory[i+20]}\t{i+40:02d}: {self.memory[i+40]}\t{i+60:02d}: {self.memory[i+60]}\t{i+80:02d}: {self.memory[i+80]}"
+        vm_info = ("~" * 50) + "\n"
+        vm_info += f"Program Counter: {self.program_counter}\nAccumulator: {self.accumulator}\nMemory:"
+
+        row_count = self.memory_length // 5
+        for i in range(row_count):
+            contents = f"\n{i:02d}: {self.memory[i]}\t{i+row_count:02d}: {self.memory[i+row_count]}\t{i+(row_count * 2):02d}: {self.memory[i+(row_count * 2)]}\t{i+(row_count * 3):02d}: {self.memory[i+(row_count * 3)]}\t{i+(row_count * 4):02d}: {self.memory[i+row_count * 4]}"
             vm_info += contents
         return vm_info
 
@@ -171,11 +175,11 @@ class ProgramLoader():
 
     def load(self, vm: VM, filepath: str):
         '''Loads user program into memory if it passes all validity checks'''
-        user_program = ["+0000"] * 100
+        user_program = ["+0000"] * vm.memory_length
         has_halt = False
         with open(filepath, "r") as f:
             lines = f.readlines()
-            if len(lines) > 100:
+            if len(lines) > vm.memory_length:
                 raise MemoryError("Program larger than available memory")
             
             for i in range(len(lines)):
@@ -195,10 +199,10 @@ class ProgramLoader():
     def load_string(self, vm: VM, program: str):
         '''Loads user program from a string'''
         words = [line.strip() for line in program.split("\n")]
-        if len(words) > 100:
+        if len(words) > vm.memory_length:
             raise MemoryError("Program larger than available memory")
 
-        vm.memory = ["+0000"] * 100
+        vm.memory = ["+0000"] * vm.memory_length
         for i, code in enumerate(words):
             if not code:
                 continue
@@ -218,7 +222,7 @@ class ProgramLoader():
 if __name__ == "__main__":
     vm = VM()
     pl = ProgramLoader()
-    pl.load(vm, "test_files/Test2.txt")
+    pl.load(vm, "test_files/TooLong.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)
