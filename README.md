@@ -102,4 +102,4 @@ You can easily customize the look of the app by modifying the `theme.json` file.
 3. Replace these color codes with your preferred colors.
 4. Save the file and restart the app to see your changes.
 
-For more thorough instructions go to `color_customization.txt`
+For more thorough instructions go to `color_customization`
