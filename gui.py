@@ -193,7 +193,7 @@ class VMApp:
 
         # Populate the memory display with current VM memory contents
         for i, value in enumerate(self.vm.memory):
-            address = f"{i:02d}"
+            address = f"{i:03d}"
             self.memory_tree.insert("", "end", values=(address, value))
         self.style_memory_tree()
 
