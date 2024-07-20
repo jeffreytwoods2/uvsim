@@ -1,11 +1,15 @@
 class VM():
     memory_length = 250
+    word_length = 6
 
     def __init__(self):
-        self.memory = ["+0000"] * self.memory_length
         self.program_counter = 0
         self.accumulator = 0
+        self.reset_memory()
     
+    def reset_memory(self):
+        self.memory = ["+" + ("0" * self.word_length)] * self.memory_length
+
     def is_valid_word(self, word: str) -> bool:
         '''Check if a word is a valid four digit word'''
         try:
@@ -104,7 +108,7 @@ class VM():
 
         row_count = self.memory_length // 5
         for i in range(row_count):
-            contents = f"\n{i:02d}: {self.memory[i]}\t{i+row_count:02d}: {self.memory[i+row_count]}\t{i+(row_count * 2):02d}: {self.memory[i+(row_count * 2)]}\t{i+(row_count * 3):02d}: {self.memory[i+(row_count * 3)]}\t{i+(row_count * 4):02d}: {self.memory[i+row_count * 4]}"
+            contents = f"\n{i:03d}: {self.memory[i]}\t{i+row_count:03d}: {self.memory[i+row_count]}\t{i+(row_count * 2):03d}: {self.memory[i+(row_count * 2)]}\t{i+(row_count * 3):03d}: {self.memory[i+(row_count * 3)]}\t{i+(row_count * 4):03d}: {self.memory[i+row_count * 4]}"
             vm_info += contents
         return vm_info
 
@@ -175,7 +179,7 @@ class ProgramLoader():
 
     def load(self, vm: VM, filepath: str):
         '''Loads user program into memory if it passes all validity checks'''
-        user_program = ["+0000"] * vm.memory_length
+        user_program = ["+" + ("0" * vm.word_length)] * vm.memory_length
         has_halt = False
         with open(filepath, "r") as f:
             lines = f.readlines()
@@ -202,7 +206,7 @@ class ProgramLoader():
         if len(words) > vm.memory_length:
             raise MemoryError("Program larger than available memory")
 
-        vm.memory = ["+0000"] * vm.memory_length
+        vm.reset_memory()
         for i, code in enumerate(words):
             if not code:
                 continue
@@ -222,7 +226,7 @@ class ProgramLoader():
 if __name__ == "__main__":
     vm = VM()
     pl = ProgramLoader()
-    pl.load(vm, "test_files/TooLong.txt")
+    pl.load(vm, "test_files/Test3.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)
