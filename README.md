@@ -91,3 +91,15 @@ When you are done using UVSim, click the __Close__ button at the top to terminat
 
 ### Note on input files:
 If you want to process your own program through uvsim, check the files in __test_files__ to get an idea of what the program should look like. Note that the format for each line of your program should be either `+` or `-`, followed by the 4-digit instruction (see above for details on each instruction).
+
+---
+## Customizing the App's Color Scheme
+You can easily customize the look of the app by modifying the `theme.json` file. This file controls the colors of various elements in the application.
+
+### Quick Start:
+1. Open the `theme.json` file in a text editor.
+2. Look for color codes that start with "#" followed by 6 characters (e.g., "#15905b").
+3. Replace these color codes with your preferred colors.
+4. Save the file and restart the app to see your changes.
+
+For more thorough instructions go to `color_customization.txt`
