@@ -17,13 +17,13 @@ class VM():
         except ValueError:
             return False
         
-        return -9999 <= int_value <= 9999
+        return -999999 <= int_value <= 999999
 
     def accumulator_overflow(self):
-        return self.accumulator > 9999 or self.accumulator < -9999
+        return self.accumulator > 999999 or self.accumulator < -999999
     
     def truncate_accumulator(self):
-        adjusted_acc_string = str(self.accumulator)[-4:]
+        adjusted_acc_string = str(self.accumulator)[-6:]
         if self.accumulator > 0:
             self.accumulator = int(adjusted_acc_string)
         else:
@@ -34,7 +34,7 @@ class VM():
         try:
             word = input('Please enter a four digit word:\n')
             while not self.is_valid_word(word):
-                word = input('Please enter a four digit word between -9999 and 9999:\n')
+                word = input(f'Please enter a four digit word between -{"9" * self.word_length} and {"9" * self.word_length}:\n')
                 
         except EOFError:
             print("\n" + "-" * 38)
@@ -226,7 +226,7 @@ class ProgramLoader():
 if __name__ == "__main__":
     vm = VM()
     pl = ProgramLoader()
-    pl.load(vm, "test_files/Test3.txt")
+    pl.load(vm, "test_files/Test2.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)
