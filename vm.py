@@ -11,7 +11,7 @@ class VM():
         self.memory = ["+" + ("0" * self.word_length)] * self.memory_length
 
     def is_valid_word(self, word: str) -> bool:
-        '''Check if a word is a valid four digit word'''
+        '''Check if a word is a valid 6 digit word'''
         try:
             int_value = int(word)
         except ValueError:
@@ -32,9 +32,9 @@ class VM():
     def read_op(self, operand: int):
         '''Read a word from the keyboard into a specific location in memory'''
         try:
-            word = input('Please enter a four digit word:\n')
+            word = input(f'Please enter a {self.word_length} digit word:\n')
             while not self.is_valid_word(word):
-                word = input(f'Please enter a four digit word between -{"9" * self.word_length} and {"9" * self.word_length}:\n')
+                word = input(f'Please enter a {self.word_length} digit word between -{"9" * self.word_length} and {"9" * self.word_length}:\n')
                 
         except EOFError:
             print("\n" + "-" * 38)
@@ -121,7 +121,7 @@ class VM():
         code = self.memory[self.program_counter]
         sign: str = code[0]
         opcode: str = self.get_opcode()
-        operand: int = int(code[5:7])
+        operand: int = int(code[4:7])
         if sign == "-":
             operand *= -1
 
