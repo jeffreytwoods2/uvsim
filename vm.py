@@ -124,11 +124,8 @@ class VM():
         operand: int = int(code[4:7])
 
         if operand > self.memory_length - 1:
-            print(f"Error: Address {str(self.program_counter).zfill(3)} targets invalid memory adderss {operand}. Program halted.")
+            print(f"Error: Word in address {str(self.program_counter).zfill(3)} targets invalid memory address {operand}. Program halted.")
             raise ValueError(f"Invalid memory address: {operand}")
-        
-        if sign == "-":
-            operand *= -1
 
         self.program_counter += 1
 
