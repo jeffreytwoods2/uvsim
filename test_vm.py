@@ -17,7 +17,7 @@ class TestIsValidWord(unittest.TestCase):
         vm = VM()
         assert vm.is_valid_word("Dog") == False
         assert vm.is_valid_word("-1000000") == False
-        assert vm.is_valid_word("+10000") == False
+        assert vm.is_valid_word("+1000000") == False
 
 class TestRead(unittest.TestCase):
     @patch("vm.input", return_value="1")
