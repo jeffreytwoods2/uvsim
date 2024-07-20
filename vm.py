@@ -44,9 +44,9 @@ class VM():
             return
 
         if int(word) < 0:
-            self.memory[operand] = f"{str(word).zfill(5)}"
+            self.memory[operand] = f"{str(word).zfill(self.word_length + 1)}"
         else:
-            self.memory[operand] = f"+{str(word).zfill(4)}"
+            self.memory[operand] = f"+{str(word).zfill(self.word_length)}"
     
     def write_op(self, operand: int):
         '''Write a word from a specific location in memory to screen'''
@@ -114,43 +114,43 @@ class VM():
 
     def get_opcode(self: str):
         code = self.memory[self.program_counter]
-        opcode: str = code[1:3]
+        opcode: str = code[1:4]
         return opcode
     
     def process_next_step(self):
         code = self.memory[self.program_counter]
         sign: str = code[0]
         opcode: str = self.get_opcode()
-        operand: int = int(code[3:5])
+        operand: int = int(code[5:7])
         if sign == "-":
             operand *= -1
 
         self.program_counter += 1
 
         match opcode:
-            case "10":
+            case "010":
                 self.read_op(operand)
-            case "11":
+            case "011":
                 self.write_op(operand)
-            case "20":
+            case "020":
                 self.load_op(operand)
-            case "21":
+            case "021":
                 self.store_op(operand)
-            case "30":
+            case "030":
                 self.add_op(operand)
-            case "31":
+            case "031":
                 self.subtract_op(operand)
-            case "32":
+            case "032":
                 self.divide_op(operand)
-            case "33":
+            case "033":
                 self.multiply_op(operand)
-            case "40":
+            case "040":
                 self.branch_op(operand)
-            case "41":
+            case "041":
                 self.branchneg_op(operand)
-            case "42":
+            case "042":
                 self.branchzero_op(operand)
-            case "43":
+            case "043":
                 return
             case _:
                 print(f"Error: invalid opcode: {opcode}. Program halted.")
@@ -160,13 +160,14 @@ class VM():
             self.truncate_accumulator()
 
     def run(self):
-        while self.get_opcode() != "43":
+        while self.get_opcode() != "043":
+            print(self.get_opcode(), self.program_counter)
             self.process_next_step()
         print("HALT.")
         self.program_counter += 1
     
     def run_by_step(self):
-        while self.get_opcode() != "43":
+        while self.get_opcode() != "043":
             self.process_next_step()
             yield
         print("HALT.")
@@ -174,7 +175,7 @@ class VM():
         
 class ProgramLoader():
     def validate_code_format(self, code: str):
-        if len(code) != 5 or code[0] not in ('+', '-') or not code[1:].isdigit():
+        if len(code) != vm.word_length + 1 or code[0] not in ('+', '-') or not code[1:].isdigit():
             raise ValueError(f"Invalid instruction: {code}")
 
     def load(self, vm: VM, filepath: str):
@@ -190,7 +191,7 @@ class ProgramLoader():
                 code = lines[i].strip()
                 self.validate_code_format(code)
                 
-                if code[1:3] == "43":
+                if code[1:4] == "043":
                     has_halt = True
                 
                 user_program[i] = code
@@ -226,7 +227,7 @@ class ProgramLoader():
 if __name__ == "__main__":
     vm = VM()
     pl = ProgramLoader()
-    pl.load(vm, "test_files/Test2.txt")
+    pl.load(vm, "test_files/6-digit-test.txt")
     vm.run()
     print("\nFINAL STATE")
     print(vm)
