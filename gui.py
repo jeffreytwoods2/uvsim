@@ -187,15 +187,16 @@ class VMApp:
         self.console_text.see("end")
 
     def update_screen(self):
-        # Clear the existing memory display
-        for item in self.memory_tree.get_children():
-            self.memory_tree.delete(item)
-
         # Populate the memory display with current VM memory contents
-        for i, value in enumerate(self.vm.memory):
-            address = f"{i:03d}"
-            self.memory_tree.insert("", "end", values=(address, value))
-        self.style_memory_tree()
+        if len(self.memory_tree.get_children()) == 0:
+            for i, value in enumerate(self.vm.memory):
+                address = f"{i:03d}"
+                self.memory_tree.insert("", "end", values=(address, value))
+                self.style_memory_tree()
+        
+        else:
+            for i, item in enumerate(self.memory_tree.get_children()):
+                self.memory_tree.item(item, values=(f"{i:03d}", self.vm.memory[i]))
 
         # Update the accumulator and program counter labels
         self.accumulator_label.configure(text=f"Accumulator: {self.vm.accumulator}")
