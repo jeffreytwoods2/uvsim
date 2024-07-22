@@ -73,6 +73,7 @@ class VMApp:
 
         # Update the GUI to reflect the initial state of the VM
         self.update_screen()
+        self.update_memory_tree()
 
     def populate_left_frame(self):
         # Configure the grid layout for the left frame
@@ -186,7 +187,7 @@ class VMApp:
             self.console_text.insert("end", "> ")
         self.console_text.see("end")
 
-    def update_screen(self):
+    def update_memory_tree(self):
         # Populate the memory display with current VM memory contents
         if len(self.memory_tree.get_children()) == 0:
             for i, value in enumerate(self.vm.memory):
@@ -194,10 +195,12 @@ class VMApp:
                 self.memory_tree.insert("", "end", values=(address, value))
                 self.style_memory_tree()
         
+        # Update any differences between memory tree and vm memory
         else:
             for i, item in enumerate(self.memory_tree.get_children()):
                 self.memory_tree.item(item, values=(f"{i:03d}", self.vm.memory[i]))
-
+                
+    def update_screen(self):
         # Update the accumulator and program counter labels
         self.accumulator_label.configure(text=f"Accumulator: {self.vm.accumulator}")
         self.pc_label.configure(text=f"Program Counter: {self.vm.program_counter}")
@@ -220,9 +223,12 @@ class VMApp:
         self.console_text.delete("1.0", "end")
         # Update the GUI to reflect the changes
         self.update_screen()
+        self.update_memory_tree()
 
     def run_from_start(self):
         def run_program():
+            tree_needs_update = False
+
             # Clear all fields before running the program
             self.clear_all_fields()
             # Run the program step by step, updating the GUI after each step
