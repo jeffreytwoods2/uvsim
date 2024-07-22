@@ -73,6 +73,7 @@ class VMApp:
 
         # Update the GUI to reflect the initial state of the VM
         self.update_screen()
+        self.update_memory_tree()
 
     def populate_left_frame(self):
         # Configure the grid layout for the left frame
@@ -186,17 +187,20 @@ class VMApp:
             self.console_text.insert("end", "> ")
         self.console_text.see("end")
 
-    def update_screen(self):
-        # Clear the existing memory display
-        for item in self.memory_tree.get_children():
-            self.memory_tree.delete(item)
-
+    def update_memory_tree(self):
         # Populate the memory display with current VM memory contents
-        for i, value in enumerate(self.vm.memory):
-            address = f"{i:03d}"
-            self.memory_tree.insert("", "end", values=(address, value))
-        self.style_memory_tree()
-
+        if len(self.memory_tree.get_children()) == 0:
+            for i, value in enumerate(self.vm.memory):
+                address = f"{i:03d}"
+                self.memory_tree.insert("", "end", values=(address, value))
+                self.style_memory_tree()
+        
+        # Update any differences between memory tree and vm memory
+        else:
+            for i, item in enumerate(self.memory_tree.get_children()):
+                self.memory_tree.item(item, values=(f"{i:03d}", self.vm.memory[i]))
+                
+    def update_screen(self):
         # Update the accumulator and program counter labels
         self.accumulator_label.configure(text=f"Accumulator: {self.vm.accumulator}")
         self.pc_label.configure(text=f"Program Counter: {self.vm.program_counter}")
@@ -219,6 +223,15 @@ class VMApp:
         self.console_text.delete("1.0", "end")
         # Update the GUI to reflect the changes
         self.update_screen()
+        self.update_memory_tree()
+
+    def check_for_memory_update(self):
+        # Check to see if memory has been changed. If so, updates the memory tree
+        last_opcode = self.vm.get_opcode(self.vm.program_counter - 1)
+
+        # If previous action was load or store, then the tree needs to be udpated
+        if last_opcode == "010" or last_opcode == "021":
+            self.update_memory_tree()
 
     def run_from_start(self):
         def run_program():
@@ -226,8 +239,11 @@ class VMApp:
             self.clear_all_fields()
             # Run the program step by step, updating the GUI after each step
             for _ in self.vm.run_by_step():
+                self.check_for_memory_update()
                 self.update_screen()
+
             # Final update after program completion
+            self.check_for_memory_update()
             self.update_screen()
 
         # Run the program in a separate thread to keep the GUI responsive

@@ -112,15 +112,15 @@ class VM():
             vm_info += contents
         return vm_info
 
-    def get_opcode(self: str):
-        code = self.memory[self.program_counter]
+    def get_opcode(self, index) -> str:
+        code = self.memory[index]
         opcode: str = code[1:4]
         return opcode
     
     def process_next_step(self):
         code = self.memory[self.program_counter]
         sign: str = code[0]
-        opcode: str = self.get_opcode()
+        opcode: str = self.get_opcode(self.program_counter)
         operand: int = int(code[4:7])
 
         if operand > self.memory_length - 1:
@@ -162,14 +162,13 @@ class VM():
             self.truncate_accumulator()
 
     def run(self):
-        while self.get_opcode() != "043":
-            print(self.get_opcode(), self.program_counter)
+        while self.get_opcode(self.program_counter) != "043":
             self.process_next_step()
         print("HALT.")
         self.program_counter += 1
     
     def run_by_step(self):
-        while self.get_opcode() != "043":
+        while self.get_opcode(self.program_counter) != "043":
             self.process_next_step()
             yield
         print("HALT.")
