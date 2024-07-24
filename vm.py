@@ -70,7 +70,11 @@ class VM():
         self.accumulator = int(self.memory[operand])
     
     def store_op(self, operand: int):
-        self.memory[operand] = f"{self.accumulator:+07d}"
+        '''Store a word from the accumulator into a specific location in memory'''
+        if self.accumulator < 0:
+            self.memory[operand] = f"{str(self.accumulator).zfill(7)}"
+        else:
+            self.memory[operand] = f"+{str(self.accumulator).zfill(6)}"
     
     def add_op(self, operand: int):
         self.accumulator += int(self.memory[operand])
@@ -120,8 +124,8 @@ class VM():
     
     def process_next_step(self):
         code = self.memory[self.program_counter]
-        opcode = self.get_opcode(self.program_counter)
-        operand = int(code[4:7])
+        opcode: str = self.get_opcode(self.program_counter)
+        operand: int = int(code[4:7])
 
         if operand >= MEMORY_LENGTH:
             raise InvalidMemoryAddressError(ERR_INVALID_MEMORY_ADDRESS.format(operand))
@@ -169,10 +173,24 @@ class ProgramLoader():
     old_word_length = 5
     old_op_codes = ("10", "11", "20", "21", "30", "31", "32", "33", "40", "41", "42", "43")
     
+    old_word_length = 5
+    old_op_codes = ("10", "11", "20", "21", "30", "31", "32", "33", "40", "41", "42", "43")
+    
     @staticmethod
-    def validate_code_format(code: str):
+    def validate_code_format(code: str) -> str:
         if len(code) != 7 or code[0] not in ('+', '-') or not code[1:].isdigit():
             raise InvalidWordError(f"Invalid instruction: {code}")
+        
+    def convert_four_to_six(self, code: str) -> str:
+        '''Convert a 4-length word to 6-length'''
+        new_code = code
+
+        if code[1:3] in self.old_op_codes:
+            new_code = f"{code[0]}0{code[1:3]}0{code[3:]}"
+        else:
+            new_code = f"{code[0]}00{code[1:]}"
+        
+        return new_code
         
     def convert_four_to_six(self, code: str) -> str:
         '''Convert a 4-length word to 6-length'''
@@ -193,8 +211,8 @@ class ProgramLoader():
             if len(lines) > MEMORY_LENGTH:
                 raise MemoryError(ERR_PROGRAM_TOO_LARGE)
             
-            for i, line in enumerate(lines):
-                code = line.strip()
+            for i in range(len(lines)):
+                code = lines[i].strip()
                 if len(code) == self.old_word_length:
                     code = self.convert_four_to_six(code)
 
@@ -222,6 +240,8 @@ class ProgramLoader():
             if len(code) == self.old_word_length:
                 code = self.convert_four_to_six(code)
             self.validate_code_format(code)
+            if len(code) == self.old_word_length:
+                code = self.convert_four_to_six(code)
             vm.memory[i] = code
     
     def force_load(self, filepath: str, object):
@@ -231,6 +251,8 @@ class ProgramLoader():
         
         for line in lines:
             code = line.strip()
+            if len(code) == self.old_word_length:
+                code = self.convert_four_to_six(code)
             if len(code) == self.old_word_length:
                 code = self.convert_four_to_six(code)
             object.memory.append(code)
