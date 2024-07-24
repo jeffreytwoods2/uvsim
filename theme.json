@@ -42,6 +42,30 @@
     "scrollbar_button_color": ["#8c8c8c", "#8c8c8c"],
     "scrollbar_button_hover_color": ["#666", "#666"]
   },
+  "CTkOptionMenu": {
+    "corner_radius": 6,
+    "fg_color": ["#2cbe79", "#2FA572"],
+    "button_color": ["#0C955A", "#106A43"],
+    "button_hover_color": ["#0b6e3d", "#17472e"],
+    "text_color": ["gray98", "#DCE4EE"],
+    "text_color_disabled": ["gray78", "gray68"]
+  },
+  "CTkSegmentedButton": {
+    "corner_radius": 6,
+    "border_width": 2,
+    "fg_color": ["#15905b", "#15905b"],
+    "selected_color": ["#106A43", "#106A43"],
+    "selected_hover_color": ["#0D5636", "#0D5636"],
+    "unselected_color": ["#15905b", "#15905b"],
+    "unselected_hover_color": ["#127A4D", "#127A4D"],
+    "text_color": ["#fff", "#fff"],
+    "text_color_disabled": ["#c7c7c7", "#c7c7c7"]
+  },
+  "DropdownMenu": {
+    "fg_color": ["gray90", "gray20"],
+    "hover_color": ["gray75", "gray28"],
+    "text_color": ["gray10", "gray90"]
+  },
   "CTkFont": {
     "macOS": {
       "family": "SF Display",

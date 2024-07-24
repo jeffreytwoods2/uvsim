@@ -5,7 +5,9 @@ import threading
 from queue import Queue
 from vm import VM, ProgramLoader
 from program_edit_window import ProgramEditor
+from text_redirector import TextRedirector, InputRedirector
 from json.decoder import JSONDecodeError
+from config import *
 
 # Custom header label for sections in the GUI
 class VMHeader(ctk.CTkLabel):
@@ -17,29 +19,11 @@ class VMApp:
     def __init__(self, root):
         self.root = root
         self.root.title("VM Simulator")
-        
-        # Set initial window size
-        window_width = 800
-        window_height = 600
-        
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-        
-        center_x = int(screen_width/2 - window_width/2)
-        center_y = int(screen_height/2 - window_height/2)
-        # Center the window on the screen
-        self.root.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
-        
-        # Set the appearance mode custom color theme
-        # The try block is for unit test purposes
-        try:
-            ctk.set_default_color_theme("theme.json")
-            ctk.set_appearance_mode("dark")
-        except JSONDecodeError:
-            pass
+        self.setup_window()
+        self.setup_theme()
 
         #Set backgroud color of the window
-            self.root.configure(fg_color="gray87")
+        self.root.configure(fg_color="gray87")
 
         # Initialize the Virtual Machine and Program Loader
         self.vm = VM()
@@ -48,7 +32,6 @@ class VMApp:
         self.waiting_for_input = False
 
         # Configure the main grid layout
-        # The left column (index 0) has a weight of 3, making it wider than the right column
         self.root.grid_columnconfigure(0, weight=3)
         self.root.grid_columnconfigure(1, weight=2)
         self.root.grid_rowconfigure(0, weight=1)
@@ -63,18 +46,34 @@ class VMApp:
         self.right_frame.grid(row=0, column=1, padx=18, pady=20, sticky="nsew")
         self.populate_right_frame()
 
-        # Set up input redirection for the console
-        self.input_queue = Queue()
-        self.input_redirector = InputRedirector(self.input_queue, self)
-        sys.stdin = self.input_redirector
-
-        # Redirect standard output to the GUI console
-        sys.stdout = TextRedirector(self.console_text, self, "stdout")
+        self.setup_input_redirection()
 
         # Update the GUI to reflect the initial state of the VM
         self.update_screen()
         self.update_memory_tree()
 
+    def setup_window(self):
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        center_x = int(screen_width/2 - WINDOW_WIDTH/2)
+        center_y = int(screen_height/2 - WINDOW_HEIGHT/2)
+        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}")
+    
+    def setup_theme(self):
+        try:
+            ctk.set_default_color_theme(THEME_FILE)
+            ctk.set_appearance_mode(DEFAULT_APPEARANCE_MODE)
+        except JSONDecodeError:
+            pass
+
+    def setup_input_redirection(self):
+        # Set up input redirection for the console
+        self.input_queue = Queue()
+        self.input_redirector = InputRedirector(self.input_queue, self)
+        sys.stdin = self.input_redirector
+        # Redirect standard output to the GUI console
+        sys.stdout = TextRedirector(self.console_text, self, "stdout")
+    
     def populate_left_frame(self):
         # Configure the grid layout for the left frame
         self.left_frame.grid_columnconfigure(0, weight=1)
@@ -167,20 +166,30 @@ class VMApp:
             self.console_text.insert("end", "\n")
 
     def select_file(self):
-        # Open a file dialog for the user to select a program file
-        file_path = filedialog.askopenfilename()
+        file_path = filedialog.askopenfilename(filetypes=FILE_TYPES)
         if file_path == () or file_path == "":             
             return  # User cancelled file selection
         try:
-            # Attempt to load the selected file into the VM
             self.pl.load(self.vm, file_path)
             self.clear_all_fields()
             messagebox.showinfo("Success!", "Your program is loaded and ready to run")
         except Exception as details:
-            messagebox.showerror("Invalid File", details) 
+            messagebox.showerror("Invalid File", str(details))
         
-        # Force load the file into the program editor
         self.pl.force_load(file_path, self.program_editor)
+
+    def save_file(self):
+        contents = ""
+        for item in self.program_editor.memory:
+            contents += f"{item}\n"
+
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=FILE_TYPES)
+        if file_path:
+            try:
+                with open(file_path, 'w') as file:
+                    file.write(contents)
+            except Exception as e:
+                messagebox.showerror("Save Error", ERR_FILE_SAVE.format(str(e)))
 
     def display_prompt(self):
         if self.waiting_for_input:
@@ -252,50 +261,6 @@ class VMApp:
     def open_program_editor(self):
         # Open the program editor window
         self.program_editor.open()
-    
-    def save_file(self):
-        # Save the contents of the user program as a txt
-        contents = ""
-        for item in self.program_editor.memory:
-            contents += f"{item}\n"
-
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
-                                                filetypes=[("Text files", "*.txt"),
-                                                            ("All files", "*.*")])
-        if file_path:
-            with open(file_path, 'w') as file:
-                file.write(contents)
-
-# Class to redirect stdout to the GUI console
-class TextRedirector:
-    def __init__(self, widget, app, tag="stdout"):
-        self.widget = widget
-        self.app = app
-        self.tag = tag
-
-    def write(self, string):
-        self.widget.insert("end", string, (self.tag,))
-        self.widget.see("end")
-        # Only display a prompt if we're waiting for input
-        if self.app.waiting_for_input:
-            self.app.display_prompt()
-
-    def flush(self):
-        # Required for file-like objects, but no action needed
-        pass
-
-# Class to handle input redirection from the GUI console
-class InputRedirector:
-    def __init__(self, input_queue, app):
-        self.input_queue = input_queue
-        self.app = app
-
-    def readline(self):
-        self.app.waiting_for_input = True
-        self.app.display_prompt()
-        result = self.input_queue.get() + '\n'
-        self.app.waiting_for_input = False
-        return result
 
 # Main entry point of the application
 if __name__ == "__main__":
