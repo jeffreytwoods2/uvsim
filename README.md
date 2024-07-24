@@ -14,35 +14,35 @@ The entirety of BasicML is specified as follows:
 
 ### I/O operations:
 
-READ = 10 Read a word from the keyboard into a specific location in memory.
+READ = 010 Read a word from the keyboard into a specific location in memory.
 
 WRITE = 11 Write a word from a specific location in memory to screen.
 
 ### Load/store operations:
 
-LOAD = 20 Load a word from a specific location in memory into the accumulator.
+LOAD = 020 Load a word from a specific location in memory into the accumulator.
 
-STORE = 21 Store a word from the accumulator into a specific location in memory.
+STORE = 021 Store a word from the accumulator into a specific location in memory.
 
 ### Arithmetic operations:
 
-ADD = 30 Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
+ADD = 030 Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
 
-SUBTRACT = 31 Subtract a word from a specific location in memory from the word in the accumulator (leave the result in the accumulator)
+SUBTRACT = 031 Subtract a word from a specific location in memory from the word in the accumulator (leave the result in the accumulator)
 
-DIVIDE = 32 Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator).
+DIVIDE = 032 Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator).
 
-MULTIPLY = 33 multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator).
+MULTIPLY = 033 multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator).
 
 ### Control operations:
 
-BRANCH = 40 Branch to a specific location in memory
+BRANCH = 040 Branch to a specific location in memory
 
-BRANCHNEG = 41 Branch to a specific location in memory if the accumulator is negative.
+BRANCHNEG = 041 Branch to a specific location in memory if the accumulator is negative.
 
-BRANCHZERO = 42 Branch to a specific location in memory if the accumulator is zero.
+BRANCHZERO = 042 Branch to a specific location in memory if the accumulator is zero.
 
-HALT = 43 Stop the program
+HALT = 043 Stop the program
 
 The last two digits of a BasicML instruction are the operand – the address of the memory location containing the word to which the operation applies
 
@@ -79,7 +79,7 @@ Once the program is up and running, start by clicking on the __Import File__ but
 
 Any keyboard input requests from the program will appear in the __Console__. Click into the console, ensure that you cursor is below all text on its own newline, and then type the requested input. Press __Enter__ to submit your input to the program.
 
-In the __Memory__ section of the GUI window, you will see the entire contents of the machine's 100-address memory; the memory will always stay up to date as the machine progresses through each program, keeping you informed of the machine's current state at any given time.
+In the __Memory__ section of the GUI window, you will see the entire contents of the machine's 250-address memory; the memory will always stay up to date as the machine progresses through each program, keeping you informed of the machine's current state at any given time.
 
 In the __Status__ section, you will see the value currently loaded in the accumulator. The accumulator serves as temporary storage for the results of operations; at the end of all relevant operations, the value is most often stored back in memory. Beneath the accumulator is the Program Counter; this register points to whichever instruction the machine will execute next. You can keep an eye on the Program Counter as it updates live to debug and verify the execution of your program.
 
@@ -90,7 +90,7 @@ When you have finished running a program, you can load another using the steps m
 When you are done using UVSim, click the __Close__ button at the top to terminate the program (exact details of the button will vary by platform).
 
 ### Note on input files:
-If you want to process your own program through uvsim, check the files in __test_files__ to get an idea of what the program should look like. Note that the format for each line of your program should be either `+` or `-`, followed by the 4-digit instruction (see above for details on each instruction).
+If you want to process your own program through uvsim, you must ensure that the source file is formatted correctly. Each instruction (line) of the file should be either a `+` or `-` followed by 6 digits - a 3-digit operation (see above for details on each operation, and then a 3-digit target address (000 - 249). This program also supports an older file format with only 4-digits per instruction. This format is similar, but the operation (same as the ones detailed at the top of this file, but without the initial `0`) and the target address (00 - 99) are only 2 digits each.
 
 ---
 ## Customizing the App's Color Scheme
