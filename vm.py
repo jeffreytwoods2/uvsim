@@ -16,14 +16,24 @@ class InvalidOpcodeError(VMError):
     """Raised when an invalid opcode is encountered."""
     pass
 
-class VM:
+class VM():
     def __init__(self):
         self.program_counter = 0
         self.accumulator = 0
         self.reset_memory()
+        self.input_func = input
+        self.output_func = print
+        self.halted = False
     
     def reset_memory(self):
         self.memory = ["+" + ("0" * WORD_LENGTH)] * MEMORY_LENGTH
+
+    def set_io_functions(self, input_func, output_func):
+        self.input_func = input_func
+        self.output_func = output_func
+
+    def halt(self):
+        self.halted = True
 
     def is_valid_word(self, word: str) -> bool:
         try:
@@ -42,19 +52,19 @@ class VM:
     def read_op(self, operand: int):
         while True:
             try:
-                word = input(f'Please enter a {WORD_LENGTH} digit word:\n')
+                word = self.input_func(f'Please enter a {WORD_LENGTH} digit word:\n')
                 if not self.is_valid_word(word):
                     raise InvalidWordError(ERR_INVALID_WORD.format(WORD_LENGTH, "9" * WORD_LENGTH, "9" * WORD_LENGTH))
                 break
             except InvalidWordError as e:
-                print(str(e))
+                self.output_func(str(e))
             except EOFError:
-                print("\nPlease enter input on the last line of the console. Try again.")
+                self.output_func("\nPlease enter input on the last line of the console. Try again.")
 
         self.memory[operand] = f"{int(word):+07d}"
     
     def write_op(self, operand: int):
-        print(self.memory[operand])
+        self.output_func(self.memory[operand])
     
     def load_op(self, operand: int):
         self.accumulator = int(self.memory[operand])
@@ -142,23 +152,38 @@ class VM:
             self.truncate_accumulator()
 
     def run(self):
-        while self.get_opcode(self.program_counter) != "043":
+        self.halted = False
+        while not self.halted and self.get_opcode(self.program_counter) != "043":
             self.process_next_step()
-        print("HALT.")
+        self.output_func("HALT.")
         self.program_counter += 1
     
     def run_by_step(self):
         while self.get_opcode(self.program_counter) != "043":
             self.process_next_step()
             yield
-        print("HALT.")
+        self.output_func("HALT.")
         self.program_counter += 1
         
-class ProgramLoader:
+class ProgramLoader():
+    old_word_length = 5
+    old_op_codes = ("10", "11", "20", "21", "30", "31", "32", "33", "40", "41", "42", "43")
+    
     @staticmethod
     def validate_code_format(code: str):
         if len(code) != 7 or code[0] not in ('+', '-') or not code[1:].isdigit():
             raise InvalidWordError(f"Invalid instruction: {code}")
+        
+    def convert_four_to_six(self, code: str) -> str:
+        '''Convert a 4-length word to 6-length'''
+        new_code = code
+
+        if code[1:3] in self.old_op_codes:
+            new_code = f"{code[0]}0{code[1:3]}0{code[3:]}"
+        else:
+            new_code = f"{code[0]}00{code[1:]}"
+        
+        return new_code
 
     def load(self, vm: VM, filepath: str):
         user_program = ["+" + ("0" * WORD_LENGTH)] * MEMORY_LENGTH
@@ -170,6 +195,9 @@ class ProgramLoader:
             
             for i, line in enumerate(lines):
                 code = line.strip()
+                if len(code) == self.old_word_length:
+                    code = self.convert_four_to_six(code)
+
                 self.validate_code_format(code)
                 
                 if code[1:4] == "043":
@@ -191,6 +219,8 @@ class ProgramLoader:
         for i, code in enumerate(words):
             if not code:
                 continue
+            if len(code) == self.old_word_length:
+                code = self.convert_four_to_six(code)
             self.validate_code_format(code)
             vm.memory[i] = code
     
@@ -201,6 +231,8 @@ class ProgramLoader:
         
         for line in lines:
             code = line.strip()
+            if len(code) == self.old_word_length:
+                code = self.convert_four_to_six(code)
             object.memory.append(code)
 
 if __name__ == "__main__":
