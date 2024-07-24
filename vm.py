@@ -181,7 +181,8 @@ class ProgramLoader():
         if len(code) != 7 or code[0] not in ('+', '-') or not code[1:].isdigit():
             raise ValueError(f"Invalid instruction: {code}")
         
-    def convert_old_to_new(self, code: str):
+    def convert_four_to_six(self, code: str) -> str:
+        '''Convert a 4-length word to 6-length'''
         new_code = code
 
         if code[1:3] in self.old_op_codes:
@@ -203,7 +204,7 @@ class ProgramLoader():
             for i in range(len(lines)):
                 code = lines[i].strip()
                 if len(code) == self.old_word_length:
-                    code = self.convert_old_to_new(code)
+                    code = self.convert_four_to_six(code)
 
                 self.validate_code_format(code)
                 
@@ -229,7 +230,7 @@ class ProgramLoader():
                 continue
             self.validate_code_format(code)
             if len(code) == self.old_word_length:
-                code = self.convert_old_to_new(code)
+                code = self.convert_four_to_six(code)
             vm.memory[i] = code
     
     def force_load(self, filepath: str, object):
@@ -241,7 +242,7 @@ class ProgramLoader():
         for line in lines:
             code = line.strip()
             if len(code) == self.old_word_length:
-                code = self.convert_old_to_new(code)
+                code = self.convert_four_to_six(code)
             object.memory.append(code)
 
 if __name__ == "__main__":

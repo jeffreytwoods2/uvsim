@@ -234,14 +234,23 @@ class TestLoadProgram(unittest.TestCase):
     def test_normal_load(self):
         vm = VM()
         pl = ProgramLoader()
-        pl.load(vm, "test_files/Test1.txt")
-        with open("test_files/Test1.txt", "r") as f:
+        pl.load(vm, "test_files/6-digit-test.txt")
+        with open("test_files/6-digit-test.txt", "r") as f:
             lines = f.readlines()
-            
             for i in range(len(lines)):
                 file_code = lines[i].strip()
-                if len(file_code) == pl.old_word_length:
-                    file_code = pl.convert_old_to_new(file_code)
+                vm_code = vm.memory[i]
+                assert(file_code == vm_code)
+    
+    # Correctly converts an old file format to a new one
+    def test_convert_file(self):
+        vm = VM()
+        pl = ProgramLoader()
+        pl.load(vm, "test_files/OldFormat.txt")
+        with open("test_files/NewFormat.txt", "r") as f:
+            lines = f.readlines()
+            for i in range(len(lines)):
+                file_code = lines[i].strip()
                 vm_code = vm.memory[i]
                 assert(file_code == vm_code)
     
@@ -286,6 +295,21 @@ class TestSaveFileMethod(unittest.TestCase):
 
         # Check if the contents were written correctly
         mock_open().write.assert_called_once_with("+000001\n+000002\n")
+
+class TestConvertFourToSix(unittest.TestCase):
+    # Correctly converts a 4-length word containing an opcode
+    def test_convert_opcode_word(self):
+        pl = ProgramLoader()
+        old_code = "+1007"
+        new_code = pl.convert_four_to_six(old_code)
+        assert(new_code == "+010007")
+
+    # Correctly converts a 4-length word containing only data
+    def test_convert_data_word(self):
+        pl = ProgramLoader()
+        old_code = "+9183"
+        new_code = pl.convert_four_to_six(old_code)
+        assert(new_code == "+009183")
 
 if __name__ == "__main__":
     unittest.main()
