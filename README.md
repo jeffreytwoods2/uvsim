@@ -90,7 +90,7 @@ When you have finished running a program, you can load another using the steps m
 When you are done using UVSim, click the __Close__ button at the top to terminate the program (exact details of the button will vary by platform).
 
 ### Note on input files:
-If you want to process your own program through uvsim, you must ensure that the source file is formatted correctly. Each instruction (line) of the file should be either a `+` or `-` followed by 6 digits - a 3-digit operation (see above for details on each operation, and then a 3-digit target address (`000` - `249`). This program also supports an older file format with only 4-digits per instruction. This format is similar, but the operation (same as the ones detailed at the top of this file, but without the initial `0`) and the target address (`00` - `99`) are only 2 digits each.
+If you want to process your own program through uvsim, you must ensure that the source file is formatted correctly. Each instruction (line) of the file should be either a `+` or `-` followed by 6 digits - a 3-digit operation (see the top of this file for details on each operation), and then a 3-digit target address (`000` - `249`). This program also supports an older file format with only 4-digits per instruction. This format is similar, but the operation (same as the ones detailed at the top of this file, but without the initial `0`) and the target address (`00` - `99`) are only 2 digits each.
 
 ---
 ## Customizing the App's Color Scheme
