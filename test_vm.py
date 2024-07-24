@@ -5,13 +5,14 @@ from vm import VM, ProgramLoader
 from gui import VMApp
 import customtkinter as ctk
 from json.decoder import JSONDecodeError
+from config import *
 
 class TestIsValidWord(unittest.TestCase):
     def test_valid_word(self):
         vm = VM()
-        assert vm.is_valid_word("+0001") == True
-        assert vm.is_valid_word("-0001") == True
-        assert vm.is_valid_word("999999") == True
+        assert vm.is_valid_word(f"+{'0' * (WORD_LENGTH - 1)}1") == True
+        assert vm.is_valid_word(f"-{'0' * (WORD_LENGTH - 1)}1") == True
+        assert vm.is_valid_word("9" * WORD_LENGTH) == True
     
     def test_invalid_word(self):
         vm = VM()
@@ -248,8 +249,9 @@ class TestLoadProgram(unittest.TestCase):
     def test_load_too_big(self):
         vm = VM()
         pl = ProgramLoader()
-        with self.assertRaises(Exception):
+        with self.assertRaises(MemoryError) as context:
             pl.load(vm, "test_files/TooLong.txt")
+        self.assertEqual(str(context.exception), ERR_PROGRAM_TOO_LARGE)
 
 class TestRun(unittest.TestCase):
     # Correctly executes first and last instruction in a max-length program

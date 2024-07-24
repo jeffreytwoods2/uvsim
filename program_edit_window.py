@@ -56,7 +56,7 @@ class ProgramEditor:
             self.save_memory()
             self.on_close()
         except Exception as details:
-            messagebox.showerror("Invalid Program", details, parent=self.program_edit_window)
+            messagebox.showerror("Invalid Program", str(details), parent=self.program_edit_window)
         
     def on_close(self):
         self.program_edit_window.destroy()

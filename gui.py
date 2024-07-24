@@ -6,6 +6,7 @@ from queue import Queue
 from vm import VM, ProgramLoader
 from program_edit_window import ProgramEditor
 from text_redirector import TextRedirector, InputRedirector
+from json.decoder import JSONDecodeError
 from config import *
 
 # Custom header label for sections in the GUI
@@ -62,8 +63,8 @@ class VMApp:
         try:
             ctk.set_default_color_theme(THEME_FILE)
             ctk.set_appearance_mode(DEFAULT_APPEARANCE_MODE)
-        except Exception as e:
-            messagebox.showwarning("Theme Error", ERR_THEME_LOAD.format(str(e)))
+        except JSONDecodeError:
+            pass
 
     def setup_input_redirection(self):
         # Set up input redirection for the console
@@ -165,20 +166,30 @@ class VMApp:
             self.console_text.insert("end", "\n")
 
     def select_file(self):
-        # Open a file dialog for the user to select a program file
-        file_path = filedialog.askopenfilename()
+        file_path = filedialog.askopenfilename(filetypes=FILE_TYPES)
         if file_path == () or file_path == "":             
             return  # User cancelled file selection
         try:
-            # Attempt to load the selected file into the VM
             self.pl.load(self.vm, file_path)
             self.clear_all_fields()
             messagebox.showinfo("Success!", "Your program is loaded and ready to run")
         except Exception as details:
-            messagebox.showerror("Invalid File", details) 
+            messagebox.showerror("Invalid File", str(details))
         
-        # Force load the file into the program editor
         self.pl.force_load(file_path, self.program_editor)
+
+    def save_file(self):
+        contents = ""
+        for item in self.program_editor.memory:
+            contents += f"{item}\n"
+
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=FILE_TYPES)
+        if file_path:
+            try:
+                with open(file_path, 'w') as file:
+                    file.write(contents)
+            except Exception as e:
+                messagebox.showerror("Save Error", ERR_FILE_SAVE.format(str(e)))
 
     def display_prompt(self):
         if self.waiting_for_input:
@@ -250,19 +261,6 @@ class VMApp:
     def open_program_editor(self):
         # Open the program editor window
         self.program_editor.open()
-    
-    def save_file(self):
-        # Save the contents of the user program as a txt
-        contents = ""
-        for item in self.program_editor.memory:
-            contents += f"{item}\n"
-
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
-                                                filetypes=[("Text files", "*.txt"),
-                                                            ("All files", "*.*")])
-        if file_path:
-            with open(file_path, 'w') as file:
-                file.write(contents)
 
 # Main entry point of the application
 if __name__ == "__main__":
