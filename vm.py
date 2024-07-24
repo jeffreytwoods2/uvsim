@@ -59,9 +59,9 @@ class VM():
     def store_op(self, operand: int):
         '''Store a word from the accumulator into a specific location in memory'''
         if self.accumulator < 0:
-            self.memory[operand] = f"{str(self.accumulator).zfill(5)}"
+            self.memory[operand] = f"{str(self.accumulator).zfill(7)}"
         else:
-            self.memory[operand] = f"+{str(self.accumulator).zfill(4)}"
+            self.memory[operand] = f"+{str(self.accumulator).zfill(6)}"
     
     def add_op(self, operand: int):
         '''Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)'''
@@ -119,7 +119,6 @@ class VM():
     
     def process_next_step(self):
         code = self.memory[self.program_counter]
-        sign: str = code[0]
         opcode: str = self.get_opcode(self.program_counter)
         operand: int = int(code[4:7])
 
@@ -175,9 +174,22 @@ class VM():
         self.program_counter += 1
         
 class ProgramLoader():
-    def validate_code_format(self, code: str):
+    old_word_length = 5
+    old_op_codes = ("10", "11", "20", "21", "30", "31", "32", "33", "40", "41", "42", "43")
+    
+    def validate_code_format(self, code: str) -> str:
         if len(code) != 7 or code[0] not in ('+', '-') or not code[1:].isdigit():
             raise ValueError(f"Invalid instruction: {code}")
+        
+    def convert_old_to_new(self, code: str):
+        new_code = code
+
+        if code[1:3] in self.old_op_codes:
+            new_code = f"{code[0]}0{code[1:3]}0{code[3:]}"
+        else:
+            new_code = f"{code[0]}00{code[1:]}"
+        
+        return new_code
 
     def load(self, vm: VM, filepath: str):
         '''Loads user program into memory if it passes all validity checks'''
@@ -190,6 +202,9 @@ class ProgramLoader():
             
             for i in range(len(lines)):
                 code = lines[i].strip()
+                if len(code) == self.old_word_length:
+                    code = self.convert_old_to_new(code)
+
                 self.validate_code_format(code)
                 
                 if code[1:4] == "043":
@@ -213,6 +228,8 @@ class ProgramLoader():
             if not code:
                 continue
             self.validate_code_format(code)
+            if len(code) == self.old_word_length:
+                code = self.convert_old_to_new(code)
             vm.memory[i] = code
     
     def force_load(self, filepath: str, object):
@@ -223,6 +240,8 @@ class ProgramLoader():
         
         for line in lines:
             code = line.strip()
+            if len(code) == self.old_word_length:
+                code = self.convert_old_to_new(code)
             object.memory.append(code)
 
 if __name__ == "__main__":
