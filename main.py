@@ -3,6 +3,23 @@ from gui import VMApp
 from config import WINDOW_WIDTH, WINDOW_HEIGHT, THEME_FILE, DEFAULT_APPEARANCE_MODE
 from json.decoder import JSONDecodeError
 
+class CustomTabview(ctk.CTkTabview):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.tab_apps = {}
+
+    def add(self, name):
+        new_tab = super().add(name)
+        vm_app = VMApp(new_tab, self)
+        self.tab_apps[name] = vm_app
+        return new_tab
+
+    def set(self, name):
+        current_name = self.get()
+        if current_name in self.tab_apps and self.tab_apps[current_name].is_running:
+            return  # Prevent tab change if current program is running
+        super().set(name)
+
 class TabbedVMApp:
     def __init__(self, root):
         self.root = root
@@ -10,16 +27,13 @@ class TabbedVMApp:
         self.setup_window()
         self.setup_theme()
 
-        # Create a notebook (tabbed interface)
-        self.notebook = ctk.CTkTabview(self.root)
+        self.notebook = CustomTabview(self.root)
         self.notebook.pack(expand=True, fill="both")
 
-        # Add initial tab
-        self.add_tab()
-
-        # Add "+" button for new tabs
         self.add_tab_button = ctk.CTkButton(self.root, text="+", command=self.add_tab, width=30)
         self.add_tab_button.pack(side="top", anchor="ne", padx=5, pady=5)
+
+        self.add_tab()  # Add initial tab
 
     def setup_window(self):
         screen_width = self.root.winfo_screenwidth()
@@ -36,15 +50,8 @@ class TabbedVMApp:
             print("Error loading theme file. Using default theme.")
 
     def add_tab(self):
-        tab_name = f"VM {len(self.notebook._tab_dict) + 1}"
-        new_tab = self.notebook.add(tab_name)
-        
-        # Create a frame to hold the VMApp instance
-        frame = ctk.CTkFrame(new_tab)
-        frame.pack(expand=True, fill="both")
-
-        # Create a new VMApp instance inside the frame
-        VMApp(frame)
+        tab_name = f"VM {len(self.notebook.tab_apps) + 1}"
+        self.notebook.add(tab_name)
 
 def main():
     root = ctk.CTk()
