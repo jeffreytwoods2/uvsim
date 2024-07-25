@@ -50,8 +50,9 @@ class TabbedVMApp:
             print("Error loading theme file. Using default theme.")
 
     def add_tab(self):
-        tab_name = f"VM {len(self.notebook.tab_apps) + 1}"
-        self.notebook.add(tab_name)
+        if len(self.notebook.tab_apps) < 15:
+            tab_name = f"VM {len(self.notebook.tab_apps) + 1}"
+            self.notebook.add(tab_name)
 
 def main():
     root = ctk.CTk()
