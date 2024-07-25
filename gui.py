@@ -6,73 +6,49 @@ from queue import Queue
 from vm import VM, ProgramLoader
 from program_edit_window import ProgramEditor
 from text_redirector import TextRedirector, InputRedirector
-from json.decoder import JSONDecodeError
 from config import *
 
-# Custom header label for sections in the GUI
 class VMHeader(ctk.CTkLabel):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs, font=("Helvetica", 20, "bold"))
 
-# Main application class for the VM Simulator
-class VMApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("VM Simulator")
-        self.setup_window()
-        self.setup_theme()
+class VMApp(ctk.CTkFrame):
+    def __init__(self, master, tabview):
+        super().__init__(master)
+        self.pack(expand=True, fill="both")
+        self.tabview = tabview
+        self.is_running = False
 
-        #Set backgroud color of the window
-        self.root.configure(fg_color="gray87")
-
-        # Initialize the Virtual Machine and Program Loader
         self.vm = VM()
         self.pl = ProgramLoader()
         self.program_editor = ProgramEditor(self)
         self.waiting_for_input = False
 
+        # Create a StringVar to hold the console output
+        self.console_output = ctk.StringVar()
+        self.console_output.trace_add('write', self.update_console)
+
         # Configure the main grid layout
-        self.root.grid_columnconfigure(0, weight=3)
-        self.root.grid_columnconfigure(1, weight=2)
-        self.root.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=3)
+        self.grid_columnconfigure(1, weight=2)
+        self.grid_rowconfigure(0, weight=1)
 
         # Create and populate the left frame (Memory and control buttons)
-        self.left_frame = ctk.CTkFrame(self.root)
+        self.left_frame = ctk.CTkFrame(self)
         self.left_frame.grid(row=0, column=0, padx=18, pady=20, sticky="nsew")
         self.populate_left_frame()
 
         # Create and populate the right frame (Status and Console)
-        self.right_frame = ctk.CTkFrame(self.root)
+        self.right_frame = ctk.CTkFrame(self)
         self.right_frame.grid(row=0, column=1, padx=18, pady=20, sticky="nsew")
         self.populate_right_frame()
 
         self.setup_input_redirection()
-
+        # Set VM input and output functions
+        self.vm.set_io_functions(self.input_redirector.readline, self.output_redirector.write)
         # Update the GUI to reflect the initial state of the VM
         self.update_screen()
         self.update_memory_tree()
-
-    def setup_window(self):
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-        center_x = int(screen_width/2 - WINDOW_WIDTH/2)
-        center_y = int(screen_height/2 - WINDOW_HEIGHT/2)
-        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}")
-    
-    def setup_theme(self):
-        try:
-            ctk.set_default_color_theme(THEME_FILE)
-            ctk.set_appearance_mode(DEFAULT_APPEARANCE_MODE)
-        except JSONDecodeError:
-            pass
-
-    def setup_input_redirection(self):
-        # Set up input redirection for the console
-        self.input_queue = Queue()
-        self.input_redirector = InputRedirector(self.input_queue, self)
-        sys.stdin = self.input_redirector
-        # Redirect standard output to the GUI console
-        sys.stdout = TextRedirector(self.console_text, self, "stdout")
     
     def populate_left_frame(self):
         # Configure the grid layout for the left frame
@@ -193,7 +169,7 @@ class VMApp:
 
     def display_prompt(self):
         if self.waiting_for_input:
-            self.console_text.insert("end", "> ")
+            self.console_text.insert("end", ">")
         self.console_text.see("end")
 
     def update_memory_tree(self):
@@ -244,26 +220,37 @@ class VMApp:
 
     def run_from_start(self):
         def run_program():
-            # Clear all fields before running the program
+            self.is_running = True
+            # Redirect stdout to this tab's console
+            original_stdout = sys.stdout
+            original_stdin = sys.stdin
+            sys.stdout = self.output_redirector
+            sys.stdin = self.input_redirector
+            
             self.clear_all_fields()
-            # Run the program step by step, updating the GUI after each step
-            for _ in self.vm.run_by_step():
-                self.check_for_memory_update()
+            try:
+                self.vm.run()
+            except Exception as e:
+                self.console_text.insert(ctk.END, f"Error: {str(e)}\n")
+            finally:
+                self.is_running = False
+                sys.stdout = original_stdout
+                sys.stdin = original_stdin
                 self.update_screen()
+                self.update_memory_tree()
 
-            # Final update after program completion
-            self.check_for_memory_update()
-            self.update_screen()
-
-        # Run the program in a separate thread to keep the GUI responsive
-        threading.Thread(target=run_program).start()
+        threading.Thread(target=run_program, daemon=True).start()
 
     def open_program_editor(self):
         # Open the program editor window
         self.program_editor.open()
+        
+    def setup_input_redirection(self):
+        self.input_queue = Queue()
+        self.input_redirector = InputRedirector(self.input_queue, self)
+        self.output_redirector = TextRedirector(self.console_output, self, "stdout")
 
-# Main entry point of the application
-if __name__ == "__main__":
-    root = ctk.CTk()
-    app = VMApp(root)
-    root.mainloop()
+    def update_console(self, *args):
+        self.console_text.insert(ctk.END, self.console_output.get())
+        self.console_text.see(ctk.END)
+        self.console_output.set('')

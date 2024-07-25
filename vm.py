@@ -16,7 +16,7 @@ class InvalidOpcodeError(VMError):
     """Raised when an invalid opcode is encountered."""
     pass
 
-class VM():
+class VM:
     def __init__(self):
         self.program_counter = 0
         self.accumulator = 0
@@ -25,12 +25,12 @@ class VM():
         self.output_func = print
         self.halted = False
     
-    def reset_memory(self):
-        self.memory = ["+" + ("0" * WORD_LENGTH)] * MEMORY_LENGTH
-
     def set_io_functions(self, input_func, output_func):
         self.input_func = input_func
         self.output_func = output_func
+    
+    def reset_memory(self):
+        self.memory = ["+" + ("0" * WORD_LENGTH)] * MEMORY_LENGTH
 
     def halt(self):
         self.halted = True
@@ -64,7 +64,7 @@ class VM():
         self.memory[operand] = f"{int(word):+07d}"
     
     def write_op(self, operand: int):
-        self.output_func(self.memory[operand])
+        self.output_func(self.memory[operand] + '\n')
     
     def load_op(self, operand: int):
         self.accumulator = int(self.memory[operand])

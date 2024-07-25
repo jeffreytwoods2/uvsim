@@ -4,7 +4,7 @@ from tkinter import messagebox
 class ProgramEditor:
     def __init__(self, parent_app):
         self.parent_app = parent_app
-        self.root = self.parent_app.root
+        self.root = self.parent_app.winfo_toplevel()
         self.memory = []
     
     def calculate_window_placement(self):
@@ -26,28 +26,23 @@ class ProgramEditor:
         self.program_edit_window = ctk.CTkToplevel(self.root)
         self.program_edit_window.title("Program Editor")
         self.program_edit_window.protocol("WM_DELETE_WINDOW", self.on_close)
-        
         self.program_edit_window.geometry(self.calculate_window_placement())
 
-        # Create main frame
         main_frame = ctk.CTkFrame(self.program_edit_window)
         main_frame.pack(expand=True, fill="both", padx=20, pady=20)
 
-        # Add "Program Editor" header
         header = ctk.CTkLabel(main_frame, text="Program Editor", font=ctk.CTkFont(size=18, weight="bold"))
         header.pack(pady=(10))
 
-        # Text area
         self.text_area = ctk.CTkTextbox(main_frame, height=400, width=300)
-        self.text_area.pack(pady=10)
+        self.text_area.pack(pady=10, expand=True, fill="both")
 
         for word in self.memory:
             self.text_area.insert("end", f"{word}\n")
         
-        # Process button
         process_button = ctk.CTkButton(main_frame, text="Process", command=self.process_text)
         process_button.pack(pady=5)
-        # Make sure the window is on top
+
         self.program_edit_window.attributes('-topmost', True)
          
     def process_text(self):
@@ -55,8 +50,9 @@ class ProgramEditor:
             self.parent_app.pl.load_string(self.parent_app.vm, self.get_file_content())
             self.save_memory()
             self.on_close()
-        except Exception as details:
-            messagebox.showerror("Invalid Program", str(details), parent=self.program_edit_window)
+            messagebox.showinfo("Success", "Program processed successfully", parent=self.program_edit_window)
+        except Exception as e:
+            messagebox.showerror("Error", str(e), parent=self.program_edit_window)
         
     def on_close(self):
         self.program_edit_window.destroy()
@@ -64,7 +60,7 @@ class ProgramEditor:
         self.parent_app.update_screen()
     
     def save_memory(self):
-        self.memory = [line for line in self.get_file_content().split("\n")]
+        self.memory = [line for line in self.get_file_content().split("\n") if line.strip()]
     
     def get_file_content(self):
         return self.text_area.get("1.0", "end").strip()
