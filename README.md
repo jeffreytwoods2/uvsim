@@ -96,6 +96,7 @@ If you want to process your own program through uvsim, you must ensure that the 
 
 ### Multiple VM Tabs:
 To open additional VM tabs in the program, click on the `+` button in the bottom right-hand corner of the window. Up to 15 tabs of UVSim can be opened at one time. When multiple tabs are open, the user can open, edit, or run any one of the instances at any time. 
+
 ---
 ## Customizing the App's Color Scheme
 You can easily customize the look of the app by modifying the `theme.json` file. This file controls the colors of various elements in the application.
