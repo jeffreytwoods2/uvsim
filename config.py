@@ -4,7 +4,7 @@ WORD_LENGTH = 6
 
 # GUI Configuration
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 700
 
 # Theme Configuration
 THEME_FILE = "theme.json"
