@@ -6,24 +6,16 @@ from queue import Queue
 from vm import VM, ProgramLoader
 from program_edit_window import ProgramEditor
 from text_redirector import TextRedirector, InputRedirector
-from json.decoder import JSONDecodeError
 from config import *
 
-# Custom header label for sections in the GUI
 class VMHeader(ctk.CTkLabel):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs, font=("Helvetica", 20, "bold"))
 
-# Main application class for the VM Simulator
-class VMApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("VM Simulator")
-        self.setup_window()
-        self.setup_theme()
-
-        #Set backgroud color of the window
-        self.root.configure(fg_color="gray87")
+class VMApp(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.pack(expand=True, fill="both")
 
         # Initialize the Virtual Machine and Program Loader
         self.vm = VM()
@@ -32,39 +24,25 @@ class VMApp:
         self.waiting_for_input = False
 
         # Configure the main grid layout
-        self.root.grid_columnconfigure(0, weight=3)
-        self.root.grid_columnconfigure(1, weight=2)
-        self.root.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=3)
+        self.grid_columnconfigure(1, weight=2)
+        self.grid_rowconfigure(0, weight=1)
 
         # Create and populate the left frame (Memory and control buttons)
-        self.left_frame = ctk.CTkFrame(self.root)
+        self.left_frame = ctk.CTkFrame(self)
         self.left_frame.grid(row=0, column=0, padx=18, pady=20, sticky="nsew")
         self.populate_left_frame()
 
         # Create and populate the right frame (Status and Console)
-        self.right_frame = ctk.CTkFrame(self.root)
+        self.right_frame = ctk.CTkFrame(self)
         self.right_frame.grid(row=0, column=1, padx=18, pady=20, sticky="nsew")
         self.populate_right_frame()
 
         self.setup_input_redirection()
-
+        self.program_editor = ProgramEditor(self)
         # Update the GUI to reflect the initial state of the VM
         self.update_screen()
         self.update_memory_tree()
-
-    def setup_window(self):
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-        center_x = int(screen_width/2 - WINDOW_WIDTH/2)
-        center_y = int(screen_height/2 - WINDOW_HEIGHT/2)
-        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}")
-    
-    def setup_theme(self):
-        try:
-            ctk.set_default_color_theme(THEME_FILE)
-            ctk.set_appearance_mode(DEFAULT_APPEARANCE_MODE)
-        except JSONDecodeError:
-            pass
 
     def setup_input_redirection(self):
         # Set up input redirection for the console
@@ -261,9 +239,3 @@ class VMApp:
     def open_program_editor(self):
         # Open the program editor window
         self.program_editor.open()
-
-# Main entry point of the application
-if __name__ == "__main__":
-    root = ctk.CTk()
-    app = VMApp(root)
-    root.mainloop()

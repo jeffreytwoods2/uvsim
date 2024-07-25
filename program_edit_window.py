@@ -4,7 +4,7 @@ from tkinter import messagebox
 class ProgramEditor:
     def __init__(self, parent_app):
         self.parent_app = parent_app
-        self.root = self.parent_app.root
+        self.root = self.parent_app.winfo_toplevel()  # Get the top-level window
         self.memory = []
     
     def calculate_window_placement(self):
