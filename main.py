@@ -12,6 +12,7 @@ class CustomTabview(ctk.CTkTabview):
         new_tab = super().add(name)
         vm_app = VMApp(new_tab, self)
         self.tab_apps[name] = vm_app
+        self.set(name)
         return new_tab
 
     def set(self, name):
