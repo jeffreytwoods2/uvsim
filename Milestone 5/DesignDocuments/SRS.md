@@ -20,7 +20,7 @@
 
 9. The system shall have a graphical user interface displaying the program counter, accumulator, memory, and output values.  
 
-10. The system shall provide a memory capacity of 100 words, each word being a 4- digit signed integer. 
+10. The system shall provide a memory capacity of 250 words, each word being a six-digit signed integer. 
 
 11. The system shall have an accumulator register to store and manipulate values during execution. 
 
@@ -32,7 +32,7 @@
 
 15. The system shall load the input file’s contents into its memory after a properly formatted file is provided. 
 
-16. The system shall handle negative values using a 4-digit representation with a leading minus sign, and positive values with a leading plus sign. 
+16. The system shall handle negative values using a six-digit representation with a leading minus sign, and positive values with a leading plus sign. 
 
 17. The system shall truncate overflowing integer values before saving them to memory. 
 
@@ -46,7 +46,13 @@
 
 22. The system shall repeat a request for user input until a valid input is provided. 
 
-23. The system shall display the final state of the virtual machine upon program termination.  
+23. The system shall display the final state of the virtual machine upon program termination.
+
+24. The system shall convert files in the old four-digit format to the six-digit format before loading them into the VM.
+
+25. The system shall hold up to 15 programs in memory at any given time.
+
+26. The system shall display and run each program separately in its own tab.
 
 ## Non-Functional Requirements 
 
