@@ -4,6 +4,7 @@ from io import StringIO
 from vm import VM, ProgramLoader
 from gui import VMApp
 import customtkinter as ctk
+from config import *
 
 class TestIsValidWord(unittest.TestCase):
     def test_valid_word(self):
@@ -283,7 +284,8 @@ class TestSaveFileMethod(unittest.TestCase):
     @patch('tkinter.filedialog.asksaveasfilename', return_value='test.txt')
     def test_save_file(self, mock_asksaveasfilename, mock_open):
         root = ctk.CTk()
-        app = VMApp(root)
+        frame = ctk.CTkFrame(root)
+        app = VMApp(root, frame)
         app.program_editor = type('', (), {})()
         app.program_editor.memory = ["+000001", "+000002"]
         app.save_file()
