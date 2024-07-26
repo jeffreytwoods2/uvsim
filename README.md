@@ -95,7 +95,7 @@ If you want to process your own program through uvsim, you must ensure that the 
 **Important**: If a file using the old format contains integer literals that contain an opcode in the first two digits (eg. `+4300` as the decimal value 4300 instead of the instruction `HALT`), UVSim will treat that word as an instruction instead of data. In this example, the line would be converted to `+043000` instead of the correct `+004300`. Unfortunately, this means that for now, file conversion is only guaranteed to work properly if all integer literals are syntacticaly distinct from an opcode.
 
 ### Multiple VM Tabs:
-To open additional VM tabs in the program, click on the `+` button in the bottom right-hand corner of the window. Up to 15 tabs of UVSim can be opened at one time. When multiple tabs are open, the user can open, edit, or run any one of the instances at any time. 
+To open additional VM tabs in the program, click on the `+` button in the bottom right-hand corner of the window. Up to 15 tabs of UVSim can be opened at one time. When multiple tabs are open, the user can open, edit, or run any one of the instances at any time. To close a particular tab, cick on the __Close__ button located right below the console. If only one tab is opened, this button will exit the entire program. 
 
 ---
 ## Customizing the App's Color Scheme
