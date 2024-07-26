@@ -2,6 +2,7 @@ import customtkinter as ctk
 from gui import VMApp
 from config import WINDOW_WIDTH, WINDOW_HEIGHT, THEME_FILE, DEFAULT_APPEARANCE_MODE
 from json.decoder import JSONDecodeError
+from sys import exit
 
 class CustomTabview(ctk.CTkTabview):
     def __init__(self, master, **kwargs):
@@ -12,6 +13,8 @@ class CustomTabview(ctk.CTkTabview):
         new_tab = super().add(name)
         vm_app = VMApp(new_tab, self)
         self.tab_apps[name] = vm_app
+        close_button = ctk.CTkButton(new_tab, text="Close", command=lambda: self.close_tab(name))
+        close_button.pack(side="right", anchor="ne", padx=5, pady=5)
         self.set(name)
         return new_tab
 
@@ -20,6 +23,16 @@ class CustomTabview(ctk.CTkTabview):
         if current_name in self.tab_apps and self.tab_apps[current_name].is_running:
             return  # Prevent tab change if current program is running
         super().set(name)
+    
+    def close_tab(self, name):
+        if name in self.tab_apps:
+            if self.tab_apps[name].is_running:
+                return  # Prevent closing if the program is running
+            if len(self.tab_apps) == 1:
+                exit(0)
+            self.tab_apps[name].destroy()  # Destroy the VMApp instance
+            del self.tab_apps[name]
+        super().delete(name)  # Delete the tab from the Tabview
 
 class TabbedVMApp:
     def __init__(self, root):
